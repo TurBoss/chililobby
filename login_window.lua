@@ -22,6 +22,7 @@ function LoginWindow:init()
         y = 50,
         height = 20,
         text = "",
+		hint = "Username",
     }
 
     self.lblPassword = Label:New {
@@ -37,6 +38,7 @@ function LoginWindow:init()
         y = 75,
         height = 20,
         text = "",
+		hint = "Password",
         passwordInput = true,
         OnKeyPress = {
             function(obj, key, mods, ...)
