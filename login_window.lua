@@ -89,7 +89,7 @@ function LoginWindow:tryLogin()
     end
     lobby:Initialize()
 
-    lobby:Connect("localhost", "8200")
+    lobby:Connect("springrts.com", "8200")
     lobby:Login(username, password, 3)
 
     local playWindow = PlayWindow()
