@@ -56,7 +56,7 @@ function ChatWindows:init()
     )
 
     self.channelConsoles = {}
-    lobby:Register("OnJoinReceived", 
+    lobby:Register("OnJoin",
         function(listener, chanName)
             local channelConsole = Console()
             self.channelConsoles[chanName] = channelConsole
