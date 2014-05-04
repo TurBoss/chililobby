@@ -104,9 +104,9 @@ function LoginWindow:tryLogin()
 
     lobby:Initialize()
 
-    lobby:Register("OnConnect", 
+    lobby:Register("OnTASServer", 
         function(listener)
-            lobby:Unregister("OnConnect", listener)
+            lobby:Unregister("OnTASServer", listener)
 
             local onDenied = function(listener, reason)
                 self.lblError:SetCaption(reason)
@@ -145,6 +145,7 @@ function LoginWindow:tryLogin()
     )
 
     lobby:Connect("springrts.com", "8200")
+    --lobby:Connect("localhost", "8200")
 end
 
 function LoginWindow:createAgreementWindow()
