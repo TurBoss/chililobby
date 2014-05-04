@@ -120,6 +120,37 @@ function PlayWindow:init()
         },
     }
 
+    self.lblUsersOnline = Label:New {
+        right = 20,
+        width = 100,
+        y = 0,
+        height = 20,
+        caption = "",
+        font = {
+            size = 20,
+        },
+    }
+    local updateUserCount = function() 
+        self.lblUsersOnline:SetCaption("Users: " .. lobby:GetUserCount())
+    end
+    updateUserCount()
+    lobby:Register("OnAddUser", updateUserCount)
+    lobby:Register("OnRemoveUser", updateUserCount)
+
+    self.lblPing = Label:New {
+        right = 20,
+        width = 100,
+        y = 25,
+        height = 20,
+        caption = "",
+        font = {
+            size = 20,
+        },
+    }
+    lobby:Register("OnPong", function() 
+        self.lblPing:SetCaption("Ping: " .. lobby:GetLatency())
+    end)
+    lobby:Ping()
 
     self.window = Window:New {
         x = 500,
@@ -136,6 +167,9 @@ function PlayWindow:init()
             self.btnPlayMultiplayerNormal,
             self.line,
             self.btnPlayMultiplayerRanked,
+
+            self.lblUsersOnline,
+            self.lblPing,
         }
     }
 end
