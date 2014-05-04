@@ -152,14 +152,14 @@ function ChatWindows:UpdateChannels(channelsArray)
                 Label:New {
                     x = 0,
                     width = 100,
-                    y = 0,
+                    y = 5,
                     height = 20,
                     caption = channel.userCount,
                 },
                 Label:New {
                     x = 50,
                     width = 100,
-                    y = 0,
+                    y = 5,
                     height = 20,
                     caption = channel.chanName,
                 },
