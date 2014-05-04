@@ -120,6 +120,45 @@ function PlayWindow:init()
         },
     }
 
+    self.btnPlayMultiplayerCustom = Button:New {
+        x = 320,
+        y = 260,
+        height = 140,
+        width = 140,
+        caption = '',
+        tooltip = "Play a custom multiplayer game", 
+        OnClick = {
+            function()
+                self.battleListWindow = BattleListWindow()
+                local sw = self.window
+                local bw = self.battleListWindow.window
+                if sw.x + sw.width + bw.width > sw.parent.width then
+                    bw.x = sw.x - bw.width
+                else
+                    bw.x = sw.x + sw.width
+                end
+                bw.y = sw.y
+            end
+        },
+        children = {
+            Image:New { 
+                file=CHILI_LOBBY_IMG_DIR .. "joystick-play.png", 
+                height = 100, 
+                width = 100,
+                margin = {0, 0, 0, 0},
+                x = 10,
+            },
+            Label:New {
+                caption = "Custom",
+                bottom = 0,
+                x = 25,           
+                font = {
+                    size = 18,
+                },
+            },
+        },
+    }
+
     self.lblUsersOnline = Label:New {
         right = 20,
         width = 100,
@@ -137,10 +176,28 @@ function PlayWindow:init()
     lobby:Register("OnAddUser", updateUserCount)
     lobby:Register("OnRemoveUser", updateUserCount)
 
-    self.lblPing = Label:New {
+    self.lblBattlesOpen = Label:New {
         right = 20,
         width = 100,
         y = 25,
+        height = 20,
+        caption = "",
+        font = {
+            size = 20,
+        },
+    }
+    local updateBattleCount = function() 
+        self.lblBattlesOpen:SetCaption("Battles: " .. lobby:GetBattleCount())
+    end
+    updateBattleCount()
+    lobby:Register("OnBattleOpened", updateBattleCount)
+    lobby:Register("OnBattleClosed", updateBattleCount)
+
+
+    self.lblPing = Label:New {
+        right = 20,
+        width = 100,
+        y = 50,
         height = 20,
         caption = "",
         font = {
@@ -167,8 +224,10 @@ function PlayWindow:init()
             self.btnPlayMultiplayerNormal,
             self.line,
             self.btnPlayMultiplayerRanked,
+            self.btnPlayMultiplayerCustom,
 
             self.lblUsersOnline,
+            self.lblBattlesOpen,
             self.lblPing,
         }
     }
