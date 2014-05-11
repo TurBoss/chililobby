@@ -104,25 +104,25 @@ function LoginWindow:tryLogin()
 
     lobby:Initialize()
 
-    lobby:Register("OnTASServer", 
+    lobby:AddListener("OnTASServer", 
         function(listener)
-            lobby:Unregister("OnTASServer", listener)
+            lobby:RemoveListener("OnTASServer", listener)
 
             local onDenied = function(listener, reason)
                 self.lblError:SetCaption(reason)
             end
 
-            lobby:Register("OnAccepted",
+            lobby:AddListener("OnAccepted",
                 function(listener)
                     local playWindow = PlayWindow()
                     local chatWindows = ChatWindows()
                     self.window:Dispose()
-                    lobby:Unregister("OnAccepted", listener)
-                    lobby:Unregister("OnDenied", onDenied)
+                    lobby:RemoveListener("OnAccepted", listener)
+                    lobby:RemoveListener("OnDenied", onDenied)
                 end
             )
 
-            lobby:Register("OnDenied", onDenied)
+            lobby:AddListener("OnDenied", onDenied)
             
             local onAgreement = function(listener, line)
                 if self.agreementText == nil then
@@ -130,13 +130,13 @@ function LoginWindow:tryLogin()
                 end
                 self.agreementText = self.agreementText .. line .. "\n"
             end
-            lobby:Register("OnAgreement", onAgreement)
+            lobby:AddListener("OnAgreement", onAgreement)
 
-            lobby:Register("OnAgreementEnd", 
+            lobby:AddListener("OnAgreementEnd", 
                 function(listener)
                     self:createAgreementWindow()
-                    lobby:Unregister("OnAgreementEnd", listener)
-                    lobby:Unregister("OnAgreement", onAgreement)
+                    lobby:RemoveListener("OnAgreementEnd", listener)
+                    lobby:RemoveListener("OnAgreement", onAgreement)
                 end
             )
 

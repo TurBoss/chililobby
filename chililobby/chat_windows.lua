@@ -6,33 +6,33 @@ function ChatWindows:init()
     self.debugConsole.listener = function(message)
         lobby:SendCustomCommand(message)
     end
-    lobby:Register("OnCommandReceived",
+    lobby:AddListener("OnCommandReceived",
         function(listner, command)
             self.debugConsole:AddMessage("<" .. command)
         end
     )
-    lobby:Register("OnCommandSent",
+    lobby:AddListener("OnCommandSent",
         function(listner, command)
             self.debugConsole:AddMessage(">" .. command)
         end
     )
 
     -- get a list of channels when login is done
-    lobby:Register("OnLoginInfoEnd",
+    lobby:AddListener("OnLoginInfoEnd",
         function(listener)
-            lobby:Unregister("OnLoginInfoEnd", listener)
+            lobby:RemoveListener("OnLoginInfoEnd", listener)
 
             self.channels = {} -- list of known channels retrieved from OnChannel
             local onChannel = function(listener, chanName, userCount, topic)
                 self.channels[chanName] = { userCount = userCount, topic = topic }
             end
 
-            lobby:Register("OnChannel", onChannel)
+            lobby:AddListener("OnChannel", onChannel)
             
-            lobby:Register("OnEndOfChannels",
+            lobby:AddListener("OnEndOfChannels",
                 function(listener)
-                    lobby:Unregister("OnEndOfChannels", listener)
-                    lobby:Unregister("OnChannel", onChannel)
+                    lobby:RemoveListener("OnEndOfChannels", listener)
+                    lobby:RemoveListener("OnChannel", onChannel)
 
                     local channelsArray = {}
                     for chanName, v in pairs(self.channels) do
@@ -56,7 +56,7 @@ function ChatWindows:init()
     )
 
     self.channelConsoles = {}
-    lobby:Register("OnJoin",
+    lobby:AddListener("OnJoin",
         function(listener, chanName)
             local channelConsole = Console()
             self.channelConsoles[chanName] = channelConsole
@@ -69,7 +69,7 @@ function ChatWindows:init()
         end
     )
 
-    lobby:Register("OnSaid", 
+    lobby:AddListener("OnSaid", 
         function(listener, chanName, userName, message)
             local channelConsole = self.channelConsoles[chanName]
             if channelConsole ~= nil then

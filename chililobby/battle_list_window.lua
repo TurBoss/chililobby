@@ -33,8 +33,8 @@ function BattleListWindow:init()
 
     local update = function() self:Update() end
     update()
-    lobby:Register("OnBattleOpened", update)
-    lobby:Register("OnBattleClosed", update)
+    lobby:AddListener("OnBattleOpened", update)
+    lobby:AddListener("OnBattleClosed", update)
 end
 
 function BattleListWindow:Update()

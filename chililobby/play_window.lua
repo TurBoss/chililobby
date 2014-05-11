@@ -173,8 +173,8 @@ function PlayWindow:init()
         self.lblUsersOnline:SetCaption("Users: " .. lobby:GetUserCount())
     end
     updateUserCount()
-    lobby:Register("OnAddUser", updateUserCount)
-    lobby:Register("OnRemoveUser", updateUserCount)
+    lobby:AddListener("OnAddUser", updateUserCount)
+    lobby:AddListener("OnRemoveUser", updateUserCount)
 
     self.lblBattlesOpen = Label:New {
         right = 20,
@@ -190,8 +190,8 @@ function PlayWindow:init()
         self.lblBattlesOpen:SetCaption("Battles: " .. lobby:GetBattleCount())
     end
     updateBattleCount()
-    lobby:Register("OnBattleOpened", updateBattleCount)
-    lobby:Register("OnBattleClosed", updateBattleCount)
+    lobby:AddListener("OnBattleOpened", updateBattleCount)
+    lobby:AddListener("OnBattleClosed", updateBattleCount)
 
 
     self.lblPing = Label:New {
@@ -204,7 +204,7 @@ function PlayWindow:init()
             size = 20,
         },
     }
-    lobby:Register("OnPong", function() 
+    lobby:AddListener("OnPong", function() 
         self.lblPing:SetCaption("Ping: " .. lobby:GetLatency())
     end)
     lobby:Ping()
