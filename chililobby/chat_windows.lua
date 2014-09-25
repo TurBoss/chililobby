@@ -68,13 +68,37 @@ function ChatWindows:init()
             self.tabPanel:AddTab({name = "#" .. chanName, children = {channelConsole.panel}})
         end
     )
-
+	
+	-- channel chat
     lobby:AddListener("OnSaid", 
         function(listener, chanName, userName, message)
             local channelConsole = self.channelConsoles[chanName]
             if channelConsole ~= nil then
                 channelConsole:AddMessage(userName .. ": " .. message)
             end
+        end
+    )
+    lobby:AddListener("OnSaidEx", 
+        function(listener, chanName, userName, message)
+            local channelConsole = self.channelConsoles[chanName]
+            if channelConsole ~= nil then
+                channelConsole:AddMessage("\255\0\139\139" .. userName .. " " .. message .. "\b")
+            end
+        end
+    )	
+	
+	-- private chat
+	self.privateChatConsoles = {}	
+    lobby:AddListener("OnSayPrivate",
+        function(listener, userName, message)
+			local privateChatConsole = self:GetPrivateChatConsole(userName)
+			privateChatConsole:AddMessage(lobby:GetMyUserName() .. ": " .. message)
+        end
+    )
+	lobby:AddListener("OnSaidPrivate",
+        function(listener, userName, message)
+			local privateChatConsole = self:GetPrivateChatConsole(userName)
+			privateChatConsole:AddMessage(userName .. ": " .. message)
         end
     )
 
@@ -178,4 +202,19 @@ function ChatWindows:UpdateChannels(channelsArray)
             }
         })
     end
+end
+
+function ChatWindows:GetPrivateChatConsole(userName)
+	if self.privateChatConsoles[userName] == nil then
+		local privateChatConsole = Console()
+		self.privateChatConsoles[userName] = privateChatConsole
+
+		privateChatConsole.listener = function(message)
+			lobby:SayPrivate(userName, message)
+		end
+
+		self.tabPanel:AddTab({name = "@" .. userName, children = {privateChatConsole.panel}})
+	end
+	
+	return self.privateChatConsoles[userName]
 end
