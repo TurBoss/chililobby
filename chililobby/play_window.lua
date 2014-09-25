@@ -208,6 +208,17 @@ function PlayWindow:init()
         self.lblPing:SetCaption("Ping: " .. lobby:GetLatency())
     end)
     lobby:Ping()
+	
+	lobby:AddListener("OnJoinBattle", 
+		function(listener, battleID)
+			succ, msg = pcall(function()
+				local battleRoom = BattleRoomWindow(battleID)
+			end)
+			if not succ then
+				Spring.Echo(msg)
+			end
+		end
+	)
 
     self.window = Window:New {
         x = 500,

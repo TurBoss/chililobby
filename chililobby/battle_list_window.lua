@@ -9,6 +9,19 @@ function BattleListWindow:init()
         font = { size = 20 },
         caption = "Custom games",
     }
+	
+	self.btnQuitBattle = Button:New {
+        right = 10,
+		y = 0,
+        width = 60,      
+		height = 35,		
+		caption = "\255\255\0\0Quit\b",
+		OnClick = {
+			function()
+				self.window:Dispose()
+			end
+		},
+    }
 
     self.battlePanel = ScrollPanel:New {
         x = 5,
@@ -17,6 +30,10 @@ function BattleListWindow:init()
         bottom = 5,
     }
 
+    local update = function() self:Update() end
+	lobby:AddListener("OnBattleOpened", update)
+    lobby:AddListener("OnBattleClosed", update)
+	
     self.window = Window:New {
         x = 500,
         width = 600,
@@ -28,13 +45,17 @@ function BattleListWindow:init()
         children = {
             self.lblCustomGames,
             self.battlePanel,
-        }
+			self.btnQuitBattle
+        },
+		OnDispose = { 
+			function()
+				lobby:RemoveListener("OnBattleOpened", onBattleClosed, update)
+				lobby:RemoveListener("OnBattleClosed", onLeftBattle, update)
+			end
+		},
     }
 
-    local update = function() self:Update() end
     update()
-    lobby:AddListener("OnBattleOpened", update)
-    lobby:AddListener("OnBattleClosed", update)
 end
 
 function BattleListWindow:Update()
@@ -122,6 +143,7 @@ function BattleListWindow:AddBattle(battle)
                 caption = "Join",
                 OnClick = {
                     function()
+						lobby:JoinBattle(battle.battleID)
                     end
                 },
             },
