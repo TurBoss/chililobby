@@ -39,6 +39,28 @@ function BattleRoomWindow:init(battleID)
 			end
 		},
     }
+
+	self.lblHaveGame = Label:New {
+        right = 10,
+		y = 45,
+        width = 60,      
+		height = 35,		
+		caption = "Don't have game [\255\255\0\0✘\b]",
+    }
+    if VFS.HasArchive(battle.gameName) then
+        self.lblHaveGame.caption = "Have game [\255\0\255\0✔\b]"
+    end
+
+	self.lblHaveMap = Label:New {
+        right = 10,
+		y = 85,
+        width = 60,      
+		height = 35,		
+		caption = "Don't have map [\255\255\0\0✘\b]",
+    }
+    if VFS.HasArchive(battle.map) then
+        self.lblHaveMap.caption = "Have map [\255\0\255\0✔\b]"
+    end
 	
 	self.btnStartBattle = Button:New {
         x = 10,
@@ -144,6 +166,8 @@ function BattleRoomWindow:init(battleID)
             self.lblBattleTitle,
             self.lblNumberOfPlayers,
 			self.btnQuitBattle,
+            self.lblHaveGame,
+            self.lblHaveMap,
 			self.btnStartBattle,
 			self.line,
 			chatPanel,

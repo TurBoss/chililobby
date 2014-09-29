@@ -221,7 +221,7 @@ function PlayWindow:init()
 	)
 
     self.window = Window:New {
-        x = 500,
+        x = 10,
         width = 500,
         y = 250,
         height = 450,

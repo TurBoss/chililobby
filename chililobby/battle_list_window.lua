@@ -36,9 +36,9 @@ function BattleListWindow:init()
 	
     self.window = Window:New {
         x = 500,
-        width = 600,
+        width = 800,
         y = 250,
-        height = 450,
+        height = 650,
         parent = screen0,
         resizable = false,
         padding = {0, 20, 0, 0},
@@ -76,12 +76,21 @@ function BattleListWindow:Update()
             width = 100,
             y = 0,
             height = 20,
-            caption = "Game",
+            caption = "Title",
         }
     )
     self.battlePanel:AddChild(
         Label:New {
             x = 265,
+            width = 100,
+            y = 0,
+            height = 20,
+            caption = "Game",
+        }
+    )
+    self.battlePanel:AddChild(
+        Label:New {
+            x = 470,
             width = 100,
             y = 0,
             height = 20,
@@ -109,7 +118,7 @@ function BattleListWindow:AddBattle(battle)
     self.battlePanel:AddChild(Control:New {
         x = 0,
         width = "100%",
-        y = (#(self.battlePanel.children) - 2) * 50,
+        y = (#(self.battlePanel.children) - 3) * 50,
         height = 40,
         children = {
             Label:New {
@@ -132,11 +141,19 @@ function BattleListWindow:AddBattle(battle)
                 width = 200,
                 y = 5,
                 height = 20,
-                caption = battle.map:sub(1, 22),
+                caption = battle.gameName:sub(1, 22) .. (VFS.HasArchive(battle.gameName) and ' [\255\0\255\0✔\b]' or ' [\255\255\0\0✘\b]'),
+                tooltip = battle.gameName, 
+            },
+            Label:New {
+                x = 470,
+                width = 200,
+                y = 5,
+                height = 20,
+                caption = battle.map:sub(1, 22) .. (VFS.HasArchive(battle.map) and ' [\255\0\255\0✔\b]' or ' [\255\255\0\0✘\b]'),
                 tooltip = battle.map, 
             },
             Button:New {
-                x = 470,
+                x = 675,
                 width = 60,
                 y = 0,
                 height = 30,
@@ -144,6 +161,7 @@ function BattleListWindow:AddBattle(battle)
                 OnClick = {
                     function()
 						lobby:JoinBattle(battle.battleID)
+                        self.window:Dispose()
                     end
                 },
             },
