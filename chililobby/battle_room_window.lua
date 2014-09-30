@@ -80,16 +80,26 @@ function BattleRoomWindow:init(battleID)
 	self.battleRoomConsole.listener = function(message)
 		lobby:SayBattle(message)
 	end
-	local chatPanel = LayoutPanel:New {
-		x = 2,
+    self.userListPanel = UserListPanel(self.battleID)
+	local chatPanel = Control:New {
+		x = 5,
 		y = 140,
-		bottom = 0,
-		right = 2,
+		bottom = 5,
+		right = 5,
 		padding = {0, 0, 0, 0},
 		itemPadding = {0, 0, 0, 0},
 		itemMargin = {0, 0, 0, 0},
 		children = {
-			self.battleRoomConsole.panel
+            Control:New {
+                x = 0, y = 0, right = 145, bottom = 0,
+                padding={0,0,0,0}, itemPadding={0,0,0,0}, itemMargin={0,0,0,0},
+                children = { self.battleRoomConsole.panel, },
+            },
+            Control:New {
+                width = 144, y = 0, right = 0, bottom = 0,
+                padding={0,0,0,0}, itemPadding={0,0,0,0}, itemMargin={0,0,0,0},
+                children = { self.userListPanel.panel, },
+            },
 		}
 	}
 	

@@ -2,6 +2,7 @@ ChatWindows = LCS.class{}
 
 function ChatWindows:init()
     -- setup debug console to listen to commands
+    --[[
     self.debugConsole = Console()
     self.debugConsole.listener = function(message)
         lobby:SendCustomCommand(message)
@@ -16,6 +17,7 @@ function ChatWindows:init()
             self.debugConsole:AddMessage(">" .. command)
         end
     )
+    --]]
 
     -- get a list of channels when login is done
     lobby:AddListener("OnLoginInfoEnd",
@@ -56,6 +58,7 @@ function ChatWindows:init()
     )
 
     self.channelConsoles = {}
+    self.userListPanels = {}
     lobby:AddListener("OnJoin",
         function(listener, chanName)
             local channelConsole = Console()
@@ -65,7 +68,34 @@ function ChatWindows:init()
                 lobby:Say(chanName, message)
             end
 
-            self.tabPanel:AddTab({name = "#" .. chanName, children = {channelConsole.panel}})
+            local userListPanel = UserListPanel(chanName)
+            self.userListPanels[chanName] = userListPanel
+            
+            self.tabPanel:AddTab(
+                {
+                    name = "#" .. chanName, 
+                    children = {
+                        Control:New {
+                            x = 0, y = 0, right = 145, bottom = 0,
+                            padding={0,0,0,0}, itemPadding={0,0,0,0}, itemMargin={0,0,0,0},
+                            children = { channelConsole.panel, },
+                        },
+                        Control:New {
+                            width = 144, y = 0, right = 0, bottom = 0,
+                            padding={0,0,0,0}, itemPadding={0,0,0,0}, itemMargin={0,0,0,0},
+                            children = { userListPanel.panel, },
+                        },
+                    }
+                }
+            )
+
+            lobby:AddListener("OnClients", 
+                function(listener, clientsChanName, clients)
+                    if chanName == clientsChanName then
+                        Spring.Echo("Users in channel: " .. chanName, #lobby:GetChannel(chanName).users)
+                    end
+                end
+            )
         end
     )
 	
@@ -117,7 +147,7 @@ function ChatWindows:init()
         padding = {0, 0, 0, 0},
         tabs = {
             { name = "server", children = {self.serverPanel} },
-            { name = "debug", children = {self.debugConsole.panel} },
+            --{ name = "debug", children = {self.debugConsole.panel} },
         },
     }
 
@@ -129,11 +159,13 @@ function ChatWindows:init()
         parent = screen0,
         caption = "Chat",
         resizable = false,
-        padding = {5, 0, 0, 0},
+        padding = {5, 0, 5, 0},
         children = {
             self.tabPanel,
         }
     }
+
+    CHILI_LOBBY = { chatWindows = self }
 end
 
 function ChatWindows:UpdateChannels(channelsArray)

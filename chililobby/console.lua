@@ -4,30 +4,30 @@ function Console:init()
     self.listener = nil
 
     self.spHistory = ScrollPanel:New {
-        x = 1,
-        right = 7,
-        y = 1,
+        x = 0,
+        right = 0,
+        y = 0,
         bottom = 42,
     }
     self.tbHistory = TextBox:New {
-        x = 1,
-        right = 1,
-        y = 1,
-        bottom = 1,
+        x = 0,
+        right = 0,
+        y = 0,
+        bottom = 0,
         text = "",
         parent = self.spHistory,
     }
     self.ebInputText = EditBox:New {
-        x = 1,
-        bottom = 8,
+        x = 0,
+        bottom = 7,
         height = 25,
         right = 100,
         text = "",
     }
     self.btnSubmit = Button:New {
-        bottom = 1,
+        bottom = 0,
         height = 40,
-        right = 3,
+        right = 0,
         width = 90,
         caption = "Submit",
         OnClick = { 
@@ -46,10 +46,13 @@ function Console:init()
         end
     }
     self.panel = Control:New {
-        x = 1,
-        y = 1,
-        width = "100%",
-        height = "100%",
+        x = 0,
+        y = 0,
+        right = 0,
+        bottom = 0,
+        padding      = {0, 0, 0, 0},
+        itemPadding  = {0, 0, 0, 0},
+        itemMargin   = {0, 0, 0, 0},
         children = {
             self.spHistory,
             self.ebInputText,
