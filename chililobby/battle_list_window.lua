@@ -49,8 +49,8 @@ function BattleListWindow:init()
         },
 		OnDispose = { 
 			function()
-				lobby:RemoveListener("OnBattleOpened", onBattleClosed, update)
-				lobby:RemoveListener("OnBattleClosed", onLeftBattle, update)
+				lobby:RemoveListener("OnBattleOpened", update)
+				lobby:RemoveListener("OnBattleClosed", update)
 			end
 		},
     }
