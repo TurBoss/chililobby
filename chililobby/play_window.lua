@@ -206,7 +206,7 @@ function PlayWindow:init()
     }
 
     -- FIXME: these listeners should be put in a separate file as they are not directly associated with the play window
-    lobby:AddListener("OnPong", function()
+    local updateStatus = function()
         local latency = lobby:GetLatency()
         local color
         if latency < 500 then
@@ -217,8 +217,11 @@ function PlayWindow:init()
             color = "\255\255\125\0"
         end
         self.lblPing:SetCaption("Connection: " .. color .. lobby:GetLatency() .. "ms\b")
-    end)
+    end
+    lobby:AddListener("OnPong", updateStatus)
     lobby:Ping()
+    
+    lobby:AddListener("OnAccepted", updateStatus)
 
     lobby:AddListener("OnDisconnected", function() 
         self.lblPing:SetCaption("Connection: \255\255\0\0Disconnected\b")
