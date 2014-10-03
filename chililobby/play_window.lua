@@ -204,10 +204,25 @@ function PlayWindow:init()
             size = 20,
         },
     }
-    lobby:AddListener("OnPong", function() 
-        self.lblPing:SetCaption("Ping: " .. lobby:GetLatency())
+
+    -- FIXME: these listeners should be put in a separate file as they are not directly associated with the play window
+    lobby:AddListener("OnPong", function()
+        local latency = lobby:GetLatency()
+        local color
+        if latency < 500 then
+            color = "\255\0\255\0"
+        elseif latency < 1000 then
+            color = "\255\255\255\0"
+        else
+            color = "\255\255\125\0"
+        end
+        self.lblPing:SetCaption("Connection: " .. color .. lobby:GetLatency() .. "ms\b")
     end)
     lobby:Ping()
+
+    lobby:AddListener("OnDisconnected", function() 
+        self.lblPing:SetCaption("Connection: \255\255\0\0Disconnected\b")
+    end)
 	
 	lobby:AddListener("OnJoinBattle", 
 		function(listener, battleID)
