@@ -8,6 +8,7 @@ function Console:init()
         right = 0,
         y = 0,
         bottom = 42,
+        verticalSmartScroll = true,
     }
     self.tbHistory = TextBox:New {
         x = 0,
