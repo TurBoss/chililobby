@@ -4,6 +4,14 @@ function ChatWindows:init()
     -- setup debug console to listen to commands
     --[[
     self.debugConsole = Console()
+    table.insert(self.debugConsole.ebInputText.OnKeyPress,
+        function(obj, key, ...)
+            -- allow tabs for the debug window
+            if key == 9 then
+                obj:TextInput("\t")
+            end
+        end
+    )
     self.debugConsole.listener = function(message)
         lobby:SendCustomCommand(message)
     end
