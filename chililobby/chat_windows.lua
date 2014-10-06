@@ -2,7 +2,7 @@ ChatWindows = LCS.class{}
 
 function ChatWindows:init()
     -- setup debug console to listen to commands
-    --[[
+    
     self.debugConsole = Console()
     table.insert(self.debugConsole.ebInputText.OnKeyPress,
         function(obj, key, ...)
@@ -25,7 +25,6 @@ function ChatWindows:init()
             self.debugConsole:AddMessage(">" .. command)
         end
     )
-    --]]
 
     -- get a list of channels when login is done
     lobby:AddListener("OnLoginInfoEnd",
@@ -155,7 +154,7 @@ function ChatWindows:init()
         padding = {0, 0, 0, 0},
         tabs = {
             { name = "server", children = {self.serverPanel} },
-            --{ name = "debug", children = {self.debugConsole.panel} },
+            { name = "debug", children = {self.debugConsole.panel} },
         },
     }
 
