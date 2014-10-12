@@ -2,6 +2,8 @@ Console = LCS.class{}
 
 function Console:init()
     self.listener = nil
+    self.showDate = true
+    self.dateFormat = "%H:%M:%S"
 
     self.spHistory = ScrollPanel:New {
         x = 0,
@@ -72,7 +74,23 @@ function Console:SendMessage()
     end
 end
 
-function Console:AddMessage(message)
-    self.tbHistory:SetText(self.tbHistory.text .. "\n" .. message)
+-- if date is not passed, current time is assumed
+function Console:AddMessage(message, userName, date, color)
+    local txt = ""
+    if self.showDate then
+        -- FIXME: the input "date" should ideally be a table so we can coerce the format
+        if date == nil then
+            date = os.date(self.dateFormat)
+        end
+        txt = txt .. "[" .. date .. "] "
+    end
+    if userName ~= nil then
+        txt = txt .. userName .. ": "
+    end
+    if color ~= nil then
+        txt = color .. txt .. "\b"
+    end
+    local txt = txt .. message
+    self.tbHistory:SetText(self.tbHistory.text .. "\n" .. txt)
 end
 

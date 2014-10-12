@@ -77,7 +77,7 @@ function ChatWindows:init()
         function(listener, chanName, userName, message)
             local channelConsole = self.channelConsoles[chanName]
             if channelConsole ~= nil then
-                channelConsole:AddMessage(userName .. ": " .. message)
+                channelConsole:AddMessage(message, userName)
             end
         end
     )
@@ -85,7 +85,7 @@ function ChatWindows:init()
         function(listener, chanName, userName, message)
             local channelConsole = self.channelConsoles[chanName]
             if channelConsole ~= nil then
-                channelConsole:AddMessage("\255\0\139\139" .. userName .. " " .. message .. "\b")
+                channelConsole:AddMessage(message, userName, nil, "\255\0\139\139")
             end
         end
     )	
@@ -95,22 +95,20 @@ function ChatWindows:init()
     lobby:AddListener("OnSayPrivate",
         function(listener, userName, message)
 			local privateChatConsole = self:GetPrivateChatConsole(userName)
-			privateChatConsole:AddMessage(lobby:GetMyUserName() .. ": " .. message)
+			privateChatConsole:AddMessage(message, lobby:GetMyUserName())
         end
     )
     lobby:AddListener("OnSaidPrivate",
         function(listener, userName, message)
             if userName == 'Nightwatch' then
-                local chanName, userName, msgDate, msg = message:match('.-|(.+)|(.+)|(.+)|(.*)')
+                local chanName, userName, msgDate, message = message:match('.-|(.+)|(.+)|(.+)|(.*)')
                 local channelConsole = self:GetChannelConsole(chanName)
                 if channelConsole ~= nil then
-                    channelConsole:AddMessage(userName .. ": " .. msg)
-                    --channelConsole:AddMessage(msg, userName)
+                    channelConsole:AddMessage(message, userName, msgDate)
                 end
             else
                 local privateChatConsole = self:GetPrivateChatConsole(userName)
-                privateChatConsole:AddMessage(userName .. ": " .. message)
-                --privateChatConsole:AddMessage(message, userName)
+                privateChatConsole:AddMessage(message, userName)
             end
         end
     )
@@ -136,7 +134,7 @@ function ChatWindows:init()
 
     self.window = Window:New {
         right = 0,
-        width = 400,
+        width = 800,
         bottom = 0,
         height = 500,
         parent = screen0,
