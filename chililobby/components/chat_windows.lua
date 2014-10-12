@@ -68,41 +68,7 @@ function ChatWindows:init()
     self.userListPanels = {}
     lobby:AddListener("OnJoin",
         function(listener, chanName)
-            local channelConsole = Console()
-            self.channelConsoles[chanName] = channelConsole
-
-            channelConsole.listener = function(message)
-                lobby:Say(chanName, message)
-            end
-
-            local userListPanel = UserListPanel(chanName)
-            self.userListPanels[chanName] = userListPanel
-            
-            self.tabPanel:AddTab(
-                {
-                    name = "#" .. chanName, 
-                    children = {
-                        Control:New {
-                            x = 0, y = 0, right = 145, bottom = 0,
-                            padding={0,0,0,0}, itemPadding={0,0,0,0}, itemMargin={0,0,0,0},
-                            children = { channelConsole.panel, },
-                        },
-                        Control:New {
-                            width = 144, y = 0, right = 0, bottom = 0,
-                            padding={0,0,0,0}, itemPadding={0,0,0,0}, itemMargin={0,0,0,0},
-                            children = { userListPanel.panel, },
-                        },
-                    }
-                }
-            )
-
-            lobby:AddListener("OnClients", 
-                function(listener, clientsChanName, clients)
-                    if chanName == clientsChanName then
-                        Spring.Echo("Users in channel: " .. chanName, #lobby:GetChannel(chanName).users)
-                    end
-                end
-            )
+            local channelConsole = self:GetChannelConsole(chanName)
         end
     )
 	
@@ -136,13 +102,15 @@ function ChatWindows:init()
         function(listener, userName, message)
             if userName == 'Nightwatch' then
                 local chanName, userName, msgDate, msg = message:match('.-|(.+)|(.+)|(.+)|(.*)')
-                local channelConsole = self.channelConsoles[chanName]
+                local channelConsole = self:GetChannelConsole(chanName)
                 if channelConsole ~= nil then
-                    channelConsole:AddMessage(msg, userName)
+                    channelConsole:AddMessage(userName .. ": " .. msg)
+                    --channelConsole:AddMessage(msg, userName)
                 end
             else
                 local privateChatConsole = self:GetPrivateChatConsole(userName)
-                privateChatConsole:AddMessage(message, userName)
+                privateChatConsole:AddMessage(userName .. ": " .. message)
+                --privateChatConsole:AddMessage(message, userName)
             end
         end
     )
@@ -252,9 +220,55 @@ function ChatWindows:UpdateChannels(channelsArray)
     end
 end
 
+function ChatWindows:GetChannelConsole(chanName)
+    local channelConsole = self.channelConsoles[chanName]
+
+	if channelConsole == nil then
+        channelConsole = Console()
+		self.channelConsoles[chanName] = channelConsole
+
+        channelConsole.listener = function(message)
+            lobby:Say(chanName, message)
+        end
+
+        local userListPanel = UserListPanel(chanName)
+        self.userListPanels[chanName] = userListPanel
+
+        self.tabPanel:AddTab(
+        {
+            name = "#" .. chanName, 
+            children = {
+                Control:New {
+                    x = 0, y = 0, right = 145, bottom = 0,
+                    padding={0,0,0,0}, itemPadding={0,0,0,0}, itemMargin={0,0,0,0},
+                    children = { channelConsole.panel, },
+                },
+                Control:New {
+                    width = 144, y = 0, right = 0, bottom = 0,
+                    padding={0,0,0,0}, itemPadding={0,0,0,0}, itemMargin={0,0,0,0},
+                    children = { userListPanel.panel, },
+                },
+            }
+        }
+        )
+
+        lobby:AddListener("OnClients", 
+        function(listener, clientsChanName, clients)
+            if chanName == clientsChanName then
+                Spring.Echo("Users in channel: " .. chanName, #lobby:GetChannel(chanName).users)
+            end
+        end
+        )
+	end
+	
+	return channelConsole
+end
+
 function ChatWindows:GetPrivateChatConsole(userName)
-	if self.privateChatConsoles[userName] == nil then
-		local privateChatConsole = Console()
+	local privateChatConsole = self.privateChatConsoles[userName]
+
+	if privateChatConsole == nil then
+		privateChatConsole = Console()
 		self.privateChatConsoles[userName] = privateChatConsole
 
 		privateChatConsole.listener = function(message)
@@ -264,5 +278,5 @@ function ChatWindows:GetPrivateChatConsole(userName)
 		self.tabPanel:AddTab({name = "@" .. userName, children = {privateChatConsole.panel}})
 	end
 	
-	return self.privateChatConsoles[userName]
+	return privateChatConsole
 end
