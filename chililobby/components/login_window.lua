@@ -1,45 +1,73 @@
 LoginWindow = LCS.class{}
 
+--TODO: make this a util function, maybe even add this support to chili as a whole?
+function createTabGroup(ctrls)
+	for i = 1, #ctrls do
+		local ctrl1 = ctrls[i]
+		local ctrl2 = ctrls[i + 1]
+		if ctrl2 == nil then
+			ctrl2 = ctrls[1]
+		end
+
+		if ctrl1.OnKeyPress == nil then
+			ctrl1.OnKeyPress = {}
+		end
+
+		table.insert(ctrl1.OnKeyPress,
+			function(obj, key, mods, ...)
+				if key == Spring.GetKeyCode("tab") then
+					screen0:FocusControl(ctrl2)
+				end
+			end
+		)
+	end
+end
+
 function LoginWindow:init()
+	self.scale = 1.4 * Configuration:GetScale()
+	self.fontSize = 14
     self.lblInstructions = Label:New {
         x = 1,
-        width = 100,
-        y = 20,
-        height = 20,
-        caption = "Connect to the Spring lobby server:",
+        width = 100 * self.scale,
+        y = 20 * self.scale,
+        height = 20 * self.scale,
+        caption = "Connect to the Spring lobby server",
+		font = { size = self.scale * self.fontSize},
     }
 
     self.lblUsername = Label:New {
         x = 1,
-        width = 100,
-        y = 50,
-        height = 20,
+        width = 100 * self.scale,
+        y = 50 * self.scale,
+        height = 20 * self.scale,
         caption = "Username: ",
+		font = { size = self.scale * self.fontSize},
     }
     self.ebUsername = EditBox:New {
-        x = 110,
-        width = 120,
-        y = 50,
-        height = 20,
+        x = 80 * self.scale,
+        width = 120 * self.scale,
+        y = 50 * self.scale,
+        height = 20 * self.scale,
         text = "",
-		hint = "Username",
+		font = { size = self.scale * self.fontSize},
     }
 
     self.lblPassword = Label:New {
         x = 1,
-        width = 100,
-        y = 75,
-        height = 20,
+        width = 100 * self.scale,
+        y = 75 * self.scale,
+        height = 20 * self.scale,
         caption = "Password: ",
+		font = { size = self.scale * self.fontSize},
     }
     self.ebPassword = EditBox:New {
-        x = 110,
-        width = 120,
-        y = 75,
-        height = 20,
+        x = 80 * self.scale,
+        width = 120 * self.scale,
+        y = 75 * self.scale,
+        height = 20 * self.scale,
         text = "",
-		hint = "Password",
         passwordInput = true,
+		font = { size = self.scale * self.fontSize},
         OnKeyPress = {
             function(obj, key, mods, ...)
                 if key == Spring.GetKeyCode("enter") or 
@@ -49,12 +77,14 @@ function LoginWindow:init()
             end
         },
     }
+	
     self.btnLogin = Button:New {
         x = 1,
-        width = 80,
+        width = 80 * self.scale,
         bottom = 1,
-        height = 40,
+        height = 40 * self.scale,
         caption = "Login",
+		font = { size = self.scale * self.fontSize},
         OnClick = {
             function()
                 self:tryLogin()
@@ -64,20 +94,23 @@ function LoginWindow:init()
 
     self.lblError = Label:New {
         x = 1,
-        width = 100,
-        y = 100,
-        height = 80,
+        width = 100 * self.scale,
+        y = 100 * self.scale,
+        height = 80 * self.scale,
         caption = "",
         font = {
             color = { 1, 0, 0, 1 },
+			size = self.fontSize * self.scale,
         },
     }
 
+	local ww, wh = Spring.GetWindowGeometry()
+	local w, h = 265 * self.scale, 220 * self.scale
     self.window = Window:New {
-        x = 700,
-        y = 300,
-        width = 265,
-        height = 220,
+        x = (ww - w) / 2,
+        y = (wh - h) / 2,
+        width = w,
+        height = h,
         caption = "Login",
         resizable = false,
         children = {
@@ -97,6 +130,8 @@ function LoginWindow:init()
         },
     }
 
+	createTabGroup({self.ebUsername, self.ebPassword})
+	screen0:FocusControl(self.ebUsername)
     -- FIXME: this should probably be moved to the lobby wrapper
     self.loginAttempts = 0
 end
@@ -143,8 +178,8 @@ function LoginWindow:tryLogin()
         end
         lobby:AddListener("OnTASServer", self.onTASServer)
 
-        --lobby:Connect("springrts.com", "8200")
-        lobby:Connect("localhost", "8200")
+        lobby:Connect("springrts.com", "8200")
+        --lobby:Connect("localhost", "8200")
     else
         lobby:Login(username, password, 3)
     end
@@ -193,13 +228,15 @@ function LoginWindow:createAgreementWindow()
         y = 1,
         height = "100%",
         text = self.agreementText,
+		font = { size = self.scale * self.fontSize},
     }
     self.btnYes = Button:New {
         x = 1,
-        width = 80,
+        width = 80 * self.scale,
         bottom = 1,
-        height = 40,
+        height = 40 * self.scale,
         caption = "Accept",
+		font = { size = self.scale * self.fontSize},
         OnClick = {
             function()
                 self:acceptAgreement()
@@ -207,11 +244,12 @@ function LoginWindow:createAgreementWindow()
         },
     }
     self.btnNo = Button:New {
-        x = 150,
-        width = 80,
+        x = 150 * self.scale,
+        width = 80 * self.scale,
         bottom = 1,
-        height = 40,
+        height = 40 * self.scale,
         caption = "Decline",
+		font = { size = self.scale * self.fontSize},
         OnClick = {
             function()
                 self:declineAgreement()
@@ -221,8 +259,8 @@ function LoginWindow:createAgreementWindow()
     self.agreementWindow = Window:New {
         x = 600,
         y = 400,
-        width = 350,
-        height = 450,
+        width = 350 * self.scale,
+        height = 450 * self.scale,
         caption = "Use agreement",
         resizable = false,
         children = {
@@ -230,7 +268,7 @@ function LoginWindow:createAgreementWindow()
                 x = 1,
                 right = 7,
                 y = 1,
-                bottom = 42,
+                bottom = 42 * self.scale,
                 children = {
                     self.tbAgreement
                 },
