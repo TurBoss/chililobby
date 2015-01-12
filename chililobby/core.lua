@@ -5,6 +5,8 @@ local includes = {
     "components/login_window.lua",
     "components/chat_windows.lua",
     "components/play_window.lua",
+    "components/background.lua",
+	"components/configuration.lua",
     "components/battle_list_window.lua",
 	"components/battle_room_window.lua",
     "components/user_list_panel.lua",
@@ -17,14 +19,20 @@ for _, file in ipairs(includes) do
 end
 
 function ChiliLobby:initialize()
-    local loginWindow = LoginWindow()
-    local statusBar = StatusBar()
+    self.loginWindow = LoginWindow()
+    self.statusBar = StatusBar()
+	self.background = Background()
+	self.configuration = Configuration
 
     lobby:AddListener("OnJoinBattle", 
 		function(listener, battleID)
             local battleRoom = BattleRoomWindow(battleID)
 		end
 	)
+end
+
+function ChiliLobby:DrawScreen()
+	self.background:DrawScreen()
 end
 
 return ChiliLobby
