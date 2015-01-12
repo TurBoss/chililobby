@@ -31,7 +31,7 @@ function LoginWindow:init()
         width = 100 * self.scale,
         y = 20 * self.scale,
         height = 20 * self.scale,
-        caption = "Connect to the Spring lobby server",
+        caption = i18n("connect-to-spring-server"),
 		font = { size = self.scale * self.fontSize},
     }
 
@@ -40,7 +40,7 @@ function LoginWindow:init()
         width = 100 * self.scale,
         y = 50 * self.scale,
         height = 20 * self.scale,
-        caption = "Username: ",
+        caption = i18n("username") .. ":",
 		font = { size = self.scale * self.fontSize},
     }
     self.ebUsername = EditBox:New {
@@ -57,7 +57,7 @@ function LoginWindow:init()
         width = 100 * self.scale,
         y = 75 * self.scale,
         height = 20 * self.scale,
-        caption = "Password: ",
+        caption = i18n("password") .. ":",
 		font = { size = self.scale * self.fontSize},
     }
     self.ebPassword = EditBox:New {
@@ -83,7 +83,7 @@ function LoginWindow:init()
         width = 80 * self.scale,
         bottom = 1,
         height = 40 * self.scale,
-        caption = "Login",
+        caption = i18n("login-verb"),
 		font = { size = self.scale * self.fontSize},
         OnClick = {
             function()
@@ -111,7 +111,7 @@ function LoginWindow:init()
         y = (wh - h) / 2,
         width = w,
         height = h,
-        caption = "Login",
+        caption = i18n("login-noun"),
         resizable = false,
         children = {
             self.lblInstructions,
