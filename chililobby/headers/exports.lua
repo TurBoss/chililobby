@@ -21,6 +21,7 @@ if WG and WG.Chili then
     TreeView = Chili.TreeView
     Trackbar = Chili.Trackbar
     screen0 = Chili.Screen0
+    Progressbar = Chili.Progressbar
 end
 --lobby export
 if WG and WG.LibLobby then
@@ -28,17 +29,9 @@ if WG and WG.LibLobby then
     lobby = LibLobby.lobby
 end
 
-i18n = VFS.Include("libs/i18n/i18n/init.lua", nil, VFS.DEF_MODE)
-i18n.set('en.connect-to-spring-server', 'Connect to the Spring lobby server')
-i18n.set('en.username', 'Username')
-i18n.set('en.password', 'Password')
-i18n.set('en.login-noun', 'Login')
-i18n.set('en.login-verb', 'Login')
+if WG and WG.i18n then
+    i18n = WG.i18n
+end
 
-i18n.set('sr.connect-to-spring-server', 'Prijavljivanje na Spring lobi server')
-i18n.set('sr.username', 'Nalog')
-i18n.set('sr.password', 'Lozinka')
-i18n.set('sr.login-noun', 'Prijavljivanje')
-i18n.set('sr.login-verb', 'Prijavi me')
-
---i18n.setLocale('sr')
+i18n.loadFile(CHILILOBBY_DIR .. "i18n/chililobby.lua")
+i18n.setLocale('sr')
