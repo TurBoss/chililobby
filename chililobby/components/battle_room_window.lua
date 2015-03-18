@@ -32,7 +32,7 @@ function BattleRoomWindow:init(battleID)
 		y = 0,
         width = 60,      
 		height = 35,		
-		caption = "\255\255\0\0Quit\b",
+		caption = Configuration:GetErrorColor() .. "Quit\b",
 		OnClick = {
 			function()
 				lobby:LeaveBattle()
@@ -45,10 +45,10 @@ function BattleRoomWindow:init(battleID)
 		y = 45,
         width = 60,      
 		height = 35,		
-		caption = "Don't have game [\255\255\0\0✘\b]",
+		caption = "Don't have game [" .. Configuration:GetErrorColor() .. "✘\b]",
     }
     if VFS.HasArchive(battle.gameName) then
-        self.lblHaveGame.caption = "Have game [\255\0\255\0✔\b]"
+        self.lblHaveGame.caption = "Have game [" .. Configuration:GetSuccessColor() .. "✔\b]"
     end
 
 	self.lblHaveMap = Label:New {
@@ -56,10 +56,10 @@ function BattleRoomWindow:init(battleID)
 		y = 85,
         width = 60,      
 		height = 35,		
-		caption = "Don't have map [\255\255\0\0✘\b]",
+		caption = "Don't have map [" .. Configuration:GetErrorColor() .. "✘\b]",
     }
     if VFS.HasArchive(battle.map) then
-        self.lblHaveMap.caption = "Have map [\255\0\255\0✔\b]"
+        self.lblHaveMap.caption = "Have map [" .. Configuration:GetSuccessColor() .. "✔\b]"
     end
 	
 	self.btnStartBattle = Button:New {
