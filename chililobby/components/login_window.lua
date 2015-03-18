@@ -31,7 +31,7 @@ function LoginWindow:init()
         width = 100 * self.scale,
         y = 20 * self.scale,
         height = 20 * self.scale,
-        caption = i18n("connect-to-spring-server"),
+        caption = i18n("connect_to_spring_server"),
 		font = { size = self.scale * self.fontSize},
     }
 
@@ -83,11 +83,25 @@ function LoginWindow:init()
         width = 80 * self.scale,
         bottom = 1,
         height = 40 * self.scale,
-        caption = i18n("login-verb"),
+        caption = i18n("login_verb"),
 		font = { size = self.scale * self.fontSize},
         OnClick = {
             function()
                 self:tryLogin()
+            end
+        },
+    }
+    
+    self.btnRegister = Button:New {
+        right = 1,
+        width = 80 * self.scale,
+        bottom = 1,
+        height = 40 * self.scale,
+        caption = i18n("register_verb"),
+		font = { size = self.scale * self.fontSize},
+        OnClick = {
+            function()
+                self:tryRegister()
             end
         },
     }
@@ -111,7 +125,7 @@ function LoginWindow:init()
         y = (wh - h) / 2,
         width = w,
         height = h,
-        caption = i18n("login-noun"),
+        caption = i18n("login_noun"),
         resizable = false,
         children = {
             self.lblInstructions,
@@ -120,7 +134,8 @@ function LoginWindow:init()
             self.ebUsername,
             self.ebPassword,
             self.lblError,
-            self.btnLogin
+            self.btnLogin,
+            self.btnRegister
         },
         parent = screen0,
         OnDispose = {
@@ -167,6 +182,7 @@ function LoginWindow:tryLogin()
     if username == '' or password == '' then
         return
     end
+    password = VFS.CalcMd5(password)
 
     if not lobby.connected or self.loginAttempts >= 3 then
         self.loginAttempts = 0
@@ -178,13 +194,53 @@ function LoginWindow:tryLogin()
         end
         lobby:AddListener("OnTASServer", self.onTASServer)
 
-        lobby:Connect("springrts.com", "8200")
-        --lobby:Connect("localhost", "8200")
+        lobby:Connect(Configuration:GetServerAddress(), Configuration:GetServerPort())
     else
         lobby:Login(username, password, 3)
     end
 
     self.loginAttempts = self.loginAttempts + 1
+end
+
+function LoginWindow:tryRegister()
+    self.lblError:SetCaption("")
+
+    username = self.ebUsername.text
+    password = self.ebPassword.text
+    if username == '' or password == '' then
+        return
+    end
+    password = VFS.CalcMd5(password)
+
+    if not lobby.connected or self.loginAttempts >= 3 then
+        self.loginAttempts = 0
+        self:RemoveListeners()
+
+        self.onTASServerRegister = function(listener)
+            lobby:RemoveListener("OnTASServer", self.onTASServerRegister)
+            self:OnRegister(listener)
+        end
+        lobby:AddListener("OnTASServer", self.onTASServerRegister)
+
+        lobby:Connect(Configuration:GetServerAddress(), Configuration:GetServerPort())
+    else
+        lobby:Register(username, password, "name@email.com")
+    end
+
+    self.loginAttempts = self.loginAttempts + 1
+end
+
+function LoginWindow:OnRegister()
+    lobby:Register(username, password, "name@email.com")
+    lobby:AddListener("OnRegistrationAccepted", function(listener)
+        self.lblError:SetCaption("Registered!")
+        --lobby:RemoveListener("OnRegistrationAccepted", listener)
+    end)
+    lobby:AddListener("OnRegistrationDenied", function(listener, err)
+        self.lblError:SetCaption(err)
+        --lobby:RemoveListener("OnRegistrationDenied", listener)
+    end)
+    
 end
 
 function LoginWindow:OnConnected()
