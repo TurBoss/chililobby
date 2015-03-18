@@ -17,4 +17,11 @@ return {
 		login_noun = 'Prijavljivanje',
 		login_verb = 'Prijavi me',
 	},
+    jp = {
+		connect_to_spring_server = 'Springに接続する',
+		username = 'ユーザー',
+		password = 'パスワード',
+		login_noun = 'ログイン',
+		login_verb = 'ログイン',
+    },
 }
