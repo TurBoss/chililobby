@@ -149,6 +149,11 @@ function LoginWindow:init()
 	screen0:FocusControl(self.ebUsername)
     -- FIXME: this should probably be moved to the lobby wrapper
     self.loginAttempts = 0
+    self.ebUsername:SetText(Configuration.userName)
+    self.ebPassword:SetText(Configuration.password)
+    if Configuration.autoLogin then
+        self:tryLogin()
+    end
 end
 
 function LoginWindow:RemoveListeners()
@@ -182,7 +187,13 @@ function LoginWindow:tryLogin()
     if username == '' or password == '' then
         return
     end
+    Configuration.userName = username
+    Configuration.password = password
+    Configuration.autoLogin = true
+    Configuration:SaveConfig()
+    
     password = VFS.CalcMd5(password)
+
 
     if not lobby.connected or self.loginAttempts >= 3 then
         self.loginAttempts = 0
