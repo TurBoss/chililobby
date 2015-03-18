@@ -37,7 +37,7 @@ function ChatWindows:init()
             end
 
             lobby:AddListener("OnChannel", onChannel)
-            
+
             lobby:AddListener("OnEndOfChannels",
                 function(listener)
                     lobby:RemoveListener("OnEndOfChannels", listener)
@@ -134,7 +134,7 @@ function ChatWindows:init()
 
     self.window = Window:New {
         right = 0,
-        width = 800,
+        width = "39%",
         bottom = 0,
         height = 500,
         parent = screen0,
@@ -144,10 +144,57 @@ function ChatWindows:init()
         padding = {5, 0, 5, 0},
         children = {
             self.tabPanel,
+			Button:New {
+				caption = "-",
+				width = 50,
+				y = 10,
+				right = 2,
+				height = 40,
+				OnClick = { function() self:Minimize() end },
+			},
         }
     }
 
     CHILI_LOBBY = { chatWindows = self }
+    self:Minimize()
+end
+
+function ChatWindows:Minimize()
+	self.window:Hide()
+	if not self.minimizeWindow then
+		self.minimizedWindow = Window:New {
+			right = 0,
+			width = 120,
+			bottom = 0,
+			height = 60,
+			parent = screen0,
+			caption = "",
+			resizable = false,
+			draggable = false,
+			borderThickness = 0,
+			children = { 
+				Button:New {
+					caption = "Chat",
+					x = 2,
+					right = 2,
+					height = 40,
+					OnClick = { function() self:Maximize() end },
+				},
+			},
+		}
+	else
+		self.minimizedWindow:Show()
+	end
+	
+    self.window:Invalidate()
+    self.window:AlignControl()
+end
+
+function ChatWindows:Maximize()
+	self.window:Show()
+	if self.minimizedWindow then
+		self.minimizedWindow:Hide()
+	end
 end
 
 function ChatWindows:UpdateChannels(channelsArray)
