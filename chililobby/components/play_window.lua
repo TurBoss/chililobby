@@ -1,5 +1,20 @@
 PlayWindow = LCS.class{}
 
+--local fontName = "libs/chiliui/chili/skins/Robocracy/fonts/n019003l.pfb"
+local fontName = nil--"libs/chiliui/chili/skins/Robocracy/fonts/n019003l.pfb"
+-- precompute font FIXME: it's ugly and not used directly
+function getFont() 
+	return {
+		size = 16,
+		outlineWidth = 6,
+		outlineHeight = 6,
+		outline = true,
+		outlineColor = {0.54,0.72,1,0.3},
+		autoOutlineColor = false,
+		font = fontName
+	}
+end
+
 function PlayWindow:init()
     -- Singleplayer
     self.lblPlaySingleplayer = Label:New {
@@ -12,47 +27,38 @@ function PlayWindow:init()
             size = 20,
         },
     }
+    playButtonW = 160
+    playButtonH = 70
     self.btnPlaySingleplayer = Button:New {
         x = 20,
         y = 40,
-        height = 140,
-        width = 140,
-        caption = '',
-        tooltip = "Play a singleplayer game", 
+        height = playButtonH,
+        width = playButtonW,
+        caption = 'SKIRMISH',
+        tooltip = "Play a singleplayer game",		
+        font = {
+            size = 16,
+            outlineWidth = 5,
+            outlineHeight = 5,
+			outline = true,
+        },
         OnClick = {
             function() 
             end
-        },
-        children = {
-            Image:New { 
-                file=CHILI_LOBBY_IMG_DIR .. "joystick-play.png", 
-                height = 100, 
-                width = 100,
-                margin = {0, 0, 0, 0},
-                x = 10,
-            },
-            Label:New {
-                caption = "Skirmish",
-                bottom = 0,
-                x = 25,
-                font = {
-                    size = 18,
-                },
-            },
         },
     }
     
     self.line = Line:New {
         x = 0,
-        y = 200,
-        width = 400,
+        y = 140,
+        width = 250,
     }
 
     -- Multiplayer
     self.lblPlayMultiplayer = Label:New {
         x = 20,
         width = 100,
-        y = 220,
+        y = 160,
         height = 20,
         caption = "Multiplayer",
         font = {
@@ -62,108 +68,52 @@ function PlayWindow:init()
 
     self.btnPlayMultiplayerNormal = Button:New {
         x = 20,
-        y = 260,
-        height = 140,
-        width = 140,
-        caption = '',
-        tooltip = "Play a normal multiplayer game", 
+        y = 200,
+        height = playButtonH,
+        width = playButtonW,
+        caption = 'MATCHMAKING',
+        tooltip = "Play a normal multiplayer game",		
+        font = {
+            size = 16,
+			outlineWidth = 5,
+            outlineHeight = 5,
+			outline = true,
+        },
         OnClick = {
-            function() 
+            function()
+				if (self.battleListWindow and self.battleListWindow.window.visible) or (self.queueListWindow and self.queueListWindow.window.visible) then return end
+                self:SpawnQueueListWindow()
             end
-        },
-        children = {
-            Image:New { 
-                file=CHILI_LOBBY_IMG_DIR .. "joystick-play.png", 
-                height = 100, 
-                width = 100,
-                margin = {0, 0, 0, 0},
-                x = 10,
-            },
-            Label:New {
-                caption = "Normal",
-                bottom = 0,
-                x = 25,
-                font = {
-                    size = 18,
-                },
-            },
-        },
-    }
-
-    self.btnPlayMultiplayerRanked = Button:New {
-        x = 170,
-        y = 260,
-        height = 140,
-        width = 140,
-        caption = '',
-        tooltip = "Play a ranked multiplayer game", 
-        OnClick = {
-            function() 
-            end
-        },
-        children = {
-            Image:New { 
-                file=CHILI_LOBBY_IMG_DIR .. "joystick-play.png", 
-                height = 100, 
-                width = 100,
-                margin = {0, 0, 0, 0},
-                x = 10,
-            },
-            Label:New {
-                caption = "Ranked",
-                bottom = 0,
-                x = 25,           
-                font = {
-                    size = 18,
-                },
-            },
         },
     }
 
     self.btnPlayMultiplayerCustom = Button:New {
-        x = 320,
-        y = 260,
-        height = 140,
-        width = 140,
-        caption = '',
+        x = 20,
+        y = 280,
+        height = playButtonH,
+        width = playButtonW,
         tooltip = "Play a custom multiplayer game", 
+        caption = 'CUSTOM',
+        font = {
+            size = 16,
+			outlineWidth = 5,
+            outlineHeight = 5,
+			outline = true,
+        },
         OnClick = {
             function()
-                self.battleListWindow = BattleListWindow()
-                local sw = self.window
-                local bw = self.battleListWindow.window
-                if sw.x + sw.width + bw.width > sw.parent.width then
-                    bw.x = sw.x - bw.width
-                else
-                    bw.x = sw.x + sw.width
-                end
-                bw.y = sw.y
+				if (self.battleListWindow and self.battleListWindow.window.visible) or (self.queueListWindow and self.queueListWindow.window.visible) then return end
+                self:SpawnBattleListWindow()
             end
-        },
-        children = {
-            Image:New { 
-                file=CHILI_LOBBY_IMG_DIR .. "joystick-play.png", 
-                height = 100, 
-                width = 100,
-                margin = {0, 0, 0, 0},
-                x = 10,
-            },
-            Label:New {
-                caption = "Custom",
-                bottom = 0,
-                x = 25,           
-                font = {
-                    size = 18,
-                },
-            },
         },
     }
 
     self.window = Window:New {
         x = 10,
-        width = 500,
+        --width = "60%",
+		width = "60%",
         y = 65,
-        height = 450,
+        bottom = 0,
         parent = screen0,
         resizable = false,
         draggable = false,
@@ -172,13 +122,120 @@ function PlayWindow:init()
             self.lblPlaySingleplayer,
             self.lblPlayMultiplayer,
             self.btnPlaySingleplayer,
-            self.btnPlayMultiplayerNormal,
             self.line,
-            self.btnPlayMultiplayerRanked,
+            self.btnPlayMultiplayerNormal,
             self.btnPlayMultiplayerCustom,
-
-            self.lblUsersOnline,
-            self.lblBattlesOpen,
         }
     }
+	-- caching:
+	self.queueListWindow = QueueListWindow(self.window)
+	self.queueListWindow.window:Hide()
+	self.battleListWindow = BattleListWindow(self.window)
+	self.battleListWindow.window:Hide()
+	
+-- 	lobby:AddListener("OnCommandReceived",
+--         function(listner, command)
+-- 			Spring.Echo("<" .. command)
+--         end
+--     )
+    lobby:ListQueues()
 end
+
+function PlayWindow:SpawnBattleListWindow()
+	if not self.battleListWindow then
+		self.battleListWindow = BattleListWindow(self.window)
+	else
+		self.battleListWindow.window:Show()
+	end
+	
+	local oldCaption = self.btnPlayMultiplayerCustom.caption
+	self.btnPlayMultiplayerCustom:SetCaption(Configuration:GetSelectedColor() .. oldCaption .. "\b")	
+	oldFont = self.btnPlayMultiplayerCustom.font
+	self.btnPlayMultiplayerCustom.font = Chili.Font:New(getFont())
+	self.btnPlayMultiplayerCustom.font:SetParent(self.btnPlayMultiplayerCustom)
+	self.btnPlayMultiplayerCustom.backgroundColor = Configuration:GetButtonSelectedColor()
+	self.btnPlayMultiplayerCustom:Invalidate()
+	
+	local oldCaptionLbl = self.lblPlayMultiplayer.caption	
+	self.lblPlayMultiplayer:SetCaption(Configuration:GetSelectedColor() .. oldCaptionLbl .. "\b")
+	oldFontLbl = self.lblPlayMultiplayer.font
+	self.lblPlayMultiplayer.font = Chili.Font:New({
+            size = 20,
+			font = fontName,
+        }
+	)
+	self.lblPlayMultiplayer.font:SetParent(self.lblPlayMultiplayer)
+	self.lblPlayMultiplayer:Invalidate()
+	
+	self.battleListWindow.window.OnHide = { 
+		function() 
+			--self.battleListWindow = nil
+			
+			self.btnPlayMultiplayerCustom.font = oldFont
+			self.btnPlayMultiplayerCustom.font:SetParent(self.btnPlayMultiplayerCustom)
+			self.btnPlayMultiplayerCustom:SetCaption(oldCaption)
+			self.btnPlayMultiplayerCustom.backgroundColor = self.btnPlayMultiplayerNormal.backgroundColor
+			self.btnPlayMultiplayerCustom:Invalidate()
+			
+			self.lblPlayMultiplayer.font = oldFontLbl
+			self.lblPlayMultiplayer.font:SetParent(self.lblPlayMultiplayer)
+			self.lblPlayMultiplayer:SetCaption(oldCaptionLbl)
+			self.lblPlayMultiplayer:Invalidate()
+		end 
+	}
+end
+
+function PlayWindow:SpawnQueueListWindow()
+	if not self.queueListWindow then
+		self.queueListWindow = QueueListWindow(self.window)
+	else
+		self.queueListWindow.window:Show()
+	end
+	
+	local oldCaption = self.btnPlayMultiplayerNormal.caption	
+	self.btnPlayMultiplayerNormal:SetCaption(Configuration:GetSelectedColor() .. oldCaption .. "\b")	
+	oldFont = self.btnPlayMultiplayerNormal.font
+	self.btnPlayMultiplayerNormal.font = Chili.Font:New(getFont())
+	self.btnPlayMultiplayerNormal.font:SetParent(self.btnPlayMultiplayerNormal)
+	self.btnPlayMultiplayerNormal.backgroundColor = Configuration:GetButtonSelectedColor()
+	self.btnPlayMultiplayerNormal:Invalidate()
+	
+	local oldCaptionLbl = self.lblPlayMultiplayer.caption	
+	self.lblPlayMultiplayer:SetCaption(Configuration:GetSelectedColor() .. oldCaptionLbl .. "\b")
+	oldFontLbl = self.lblPlayMultiplayer.font
+	self.lblPlayMultiplayer.font = Chili.Font:New({
+            size = 20,
+			font = fontName,
+        }
+	)
+	self.lblPlayMultiplayer.font:SetParent(self.lblPlayMultiplayer)
+	self.lblPlayMultiplayer:Invalidate()
+	
+	self.queueListWindow.window.OnHide = { 
+		function() 
+			--self.queueListWindow = nil
+			
+			self.btnPlayMultiplayerNormal.font = oldFont
+			self.btnPlayMultiplayerNormal.font:SetParent(self.btnPlayMultiplayerNormal)
+			self.btnPlayMultiplayerNormal:SetCaption(oldCaption)
+			self.btnPlayMultiplayerNormal.backgroundColor = self.btnPlayMultiplayerCustom.backgroundColor
+			self.btnPlayMultiplayerNormal:Invalidate()
+			
+			--self.lblPlayMultiplayer.font = oldFontLbl
+			--self.lblPlayMultiplayer.font:SetParent(self.lblPlayMultiplayer)
+			self.lblPlayMultiplayer:SetCaption(oldCaptionLbl)
+			self.lblPlayMultiplayer:Invalidate()
+		end 
+	}
+end
+
+local cache = {
+	Chili.Font:New(getFont()),
+	Chili.Font:New({
+		size = 20,
+		font = fontName,
+		--outlineWidth = 15,
+		--outlineHeight = 15,
+		--outline = true,
+	})
+}
