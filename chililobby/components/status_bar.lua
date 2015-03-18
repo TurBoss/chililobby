@@ -1,6 +1,7 @@
-StatusBar = LCS.class{}
+StatusBar = Component:extends{}
 
 function StatusBar:init()
+	self:super('init')
     self.panel = Window:New {
         x = 10,
         right = 10,
@@ -14,10 +15,25 @@ function StatusBar:init()
         padding = {0, 0, 0, 0},
     }
 
-    self:AddConnectionStatus()
-    self:AddServerStatus()
-    self:AddFriendsIcon()
-    self:AddPlayerIcon()
+	-- configuration
+	self.showConnectionStatus = false
+	self.showServerStatus = false
+	self.showPlayerWelcome = true
+	
+	-- aligning
+	self.iconSize = 32
+	self.imagePadding = 8
+	self.itemPadding = 10
+	
+	if self.showConnectionStatus then self:AddConnectionStatus() end
+    if self.showServerStatus then self:AddServerStatus() end
+	if self.showPlayerWelcome then self:AddPlayerWelcome() end
+	
+	-- this order must be preserved for aligning
+	self:AddMenuIcon()
+	self:AddFriendsIcon()
+	self:AddDownloadsIcon()
+	self:AddErrorsIcon()
 end
 
 function StatusBar:AddConnectionStatus()
@@ -36,9 +52,9 @@ function StatusBar:AddConnectionStatus()
         local color
         latency = math.ceil(latency)
         if latency < 500 then
-            color = "\255\0\255\0"
+            color = Configuration:GetSuccessColor()
         elseif latency < 1000 then
-            color = "\255\255\255\0"
+            color = Configuration:GetWarningColor()
         else
             if latency > 9000 then
                 latency = "9000+"
@@ -56,13 +72,14 @@ function StatusBar:AddConnectionStatus()
     )
 
     lobby:AddListener("OnDisconnected", function() 
-        self.lblPing:SetCaption("\255\255\0\0Disconnected\b")
+        self.lblPing:SetCaption(Configuration:GetErrorColor() .. "D/C\b")
     end)
 
     self.panel:AddChild(self.lblPing)
 end
 
 function StatusBar:AddServerStatus()
+    -- users
     self.lblUsersOnline = Label:New {
         x = 115,
         width = 100,
@@ -88,6 +105,7 @@ function StatusBar:AddServerStatus()
 
     self.panel:AddChild(self.lblUsersOnline)
 
+    -- battles
     self.lblBattlesOpen = Label:New {
         x = 220,
         width = 100,
@@ -115,15 +133,48 @@ function StatusBar:AddServerStatus()
     )
     lobby:AddListener("OnBattleOpened", updateBattleCount)
     lobby:AddListener("OnBattleClosed", updateBattleCount)
-
+    
     self.panel:AddChild(self.lblBattlesOpen)
+
+    -- queues 
+    self.lblQueuesOpen = Label:New {
+        x = 325,
+        width = 100,
+        y = 16,
+        height = 20,
+        caption = "",
+        font = {
+            size = 16,
+        },
+    }
+    local updateQueueCount = function() 
+        local queueCount = lobby:GetQueueCount()
+        if queueCount >= 10000000 then -- yeah
+            queueCount = math.floor((queueCount / 1000000)) .. "M"
+        elseif queueCount >= 10000 then
+            queueCount = math.floor((queueCount / 1000)) .. "k"
+        end
+        self.lblQueuesOpen:SetCaption("Queues: " .. queueCount)
+    end
+    lobby:AddListener("OnAccepted", 
+        function(listener)
+            updateQueueCount()
+            lobby:RemoveListener("OnAccepted", listener)
+        end
+    )
+    lobby:AddListener("OnQueueOpened", updateQueueCount)
+    lobby:AddListener("OnQueueClosed", updateQueueCount)
+    lobby:AddListener("OnListQueues",  updateQueueCount)
+
+    self.panel:AddChild(self.lblQueuesOpen)
 end
 
 function StatusBar:AddFriendsIcon()
     self.btnFriends = Button:New {
-        right = 55,
-		width = 50,
-		height = 50,
+        right = self.btnMenu.right + self.btnMenu.width + self.itemPadding,
+		width = self.iconSize + self.imagePadding,
+		height = self.iconSize + self.imagePadding,
+		y = (self.panel.height - self.iconSize) / 2 - 4,
 		caption = '',
 		padding = {0, 0, 0, 0},
         itemPadding = {0, 0, 0, 0},
@@ -158,10 +209,10 @@ function StatusBar:AddFriendsIcon()
             Image:New {
                 x = 4,
                 y = 4,
-                width = 42,
-                height = 42,
+                width = self.iconSize,
+                height = self.iconSize,
                 margin = {0, 0, 0, 0},
-                file = CHILI_LOBBY_IMG_DIR .. "friends_none.png",
+                file = CHILI_LOBBY_IMG_DIR .. "friends_off.png",
             },
         },
 	}
@@ -186,7 +237,7 @@ function StatusBar:AddFriendsIcon()
     self.panel:AddChild(self.btnFriends)
 end
 
-function StatusBar:AddPlayerIcon()
+function StatusBar:AddPlayerWelcome()
     self.lblPlayerIcon = Label:New {
         right = "48%",
         y = 16,
@@ -196,7 +247,18 @@ function StatusBar:AddPlayerIcon()
             size = 16,
         },
     }
-   
+	
+	lobby:AddListener("OnAccepted", 
+        function(listener)
+            self.lblPlayerIcon:SetCaption("Welcome " .. lobby:GetMyUserName())
+            --self.lblPlayerIcon:SetCaption("Welcome 12345123451234512345!")
+        end
+    )
+
+    self.panel:AddChild(self.lblPlayerIcon)
+end
+
+function StatusBar:AddMenuIcon()
     self.btnSettings = Button:New {
         width = 100, height = 40,
         caption = "Settings",                
@@ -211,9 +273,10 @@ function StatusBar:AddPlayerIcon()
         caption = "Quit",
     }
     self.btnMenu = ComboBox:New {
-        right = 2,
-		width = 50,
-		height = 50,
+        right = 5,
+		width = self.iconSize + self.imagePadding,
+		height = self.iconSize + self.imagePadding,
+		y = (self.panel.height - self.iconSize) / 2 - 4,
 		caption = '',
 		padding = {0, 0, 0, 0},
         itemPadding = {0, 0, 0, 0},
@@ -222,10 +285,10 @@ function StatusBar:AddPlayerIcon()
         focusColor      = {0.4, 0.4, 0.4, 1},
         children = {
             Image:New {
-                x = 9,
-                y = 9,
-                width = 32,
-                height = 32,
+                x = 4,
+                y = 4,
+                width = self.iconSize,
+                height = self.iconSize,
                 margin = {0, 0, 0, 0},
                 file = CHILI_LOBBY_IMG_DIR .. "menu.png",
             },
@@ -233,7 +296,7 @@ function StatusBar:AddPlayerIcon()
         items = {
             self.btnSettings,
             Line:New {
-                width = 100,                
+                width = 100,
             },
             self.btnLogout,
             self.btnQuit,
@@ -254,13 +317,130 @@ function StatusBar:AddPlayerIcon()
         end
     }
     
-    lobby:AddListener("OnAccepted", 
-        function(listener)
-            self.lblPlayerIcon:SetCaption("Welcome " .. lobby:GetMyUserName())
-            --self.lblPlayerIcon:SetCaption("Welcome 12345123451234512345!")
-        end
-    )
-
-    self.panel:AddChild(self.lblPlayerIcon)
     self.panel:AddChild(self.btnMenu)
+end
+
+function StatusBar:AddDownloadsIcon()
+    self.btnDownloads = Button:New {
+        right = self.btnFriends.right + self.btnFriends.width + self.itemPadding,
+		width = self.iconSize + self.imagePadding,
+		height = self.iconSize + self.imagePadding,
+		y = (self.panel.height - self.iconSize) / 2 - 4,
+		caption = '',
+		padding = {0, 0, 0, 0},
+        itemPadding = {0, 0, 0, 0},
+        borderThickness = 0,
+        backgroundColor = {0, 0, 0, 0},
+        focusColor      = {0.4, 0.4, 0.4, 1},
+        children = {
+            Label:New {
+                x = 3,
+                y = 28,
+                height = 10,
+                font = { 
+                    size = 17, 
+                    outline = true,
+                    autoOutlineColor = false,
+                    outlineColor = { 1, 0, 0, 0.6 },
+                },
+                caption = "",
+            },
+            Label:New {
+                x = 28,
+                y = 3,
+                height = 10,
+                font = { 
+                    size = 14, 
+                    outline = true,
+                    autoOutlineColor = false,
+                    outlineColor = { 0, 1, 0, 0.6 },
+                },
+                caption = "",
+            },
+            Image:New {
+                x = 4,
+                y = 4,
+                width = self.iconSize,
+                height = self.iconSize,
+                margin = {0, 0, 0, 0},
+                file = CHILI_LOBBY_IMG_DIR .. "download_off.png",
+            },
+        },
+	}
+    self.panel:AddChild(self.btnDownloads)
+	self.downloads = 0
+end
+
+function StatusBar:DownloadStarted(...)
+	Spring.Echo("Download started")
+end
+
+function StatusBar:DownloadQueued(...)
+	Spring.Echo("Download finished")
+	self.downloads = self.downloads + 1
+	self.btnDownloads.children[1]:SetCaption("\255\0\200\0" .. tostring(self.downloads) .. "\b")
+	self.btnDownloads.children[3].file = CHILI_LOBBY_IMG_DIR .. "download.png"
+end
+
+function StatusBar:DownloadFinished(...)
+	Spring.Echo("Download finished")
+	self.downloads = self.downloads - 1
+	if self.downloads > 0 then
+		self.btnDownloads.children[1]:SetCaption("\255\0\200\0" .. tostring(self.downloads) .. "\b")
+	else		
+		self.btnDownloads.children[1]:SetCaption("")
+		self.btnDownloads.children[3].file = CHILI_LOBBY_IMG_DIR .. "download_off.png"
+	end
+end
+
+
+function StatusBar:AddErrorsIcon()
+    self.btnErrors = Button:New {
+        right = self.btnDownloads.right + self.btnDownloads.width + self.itemPadding,
+		width = self.iconSize + self.imagePadding,
+		height = self.iconSize + self.imagePadding,
+		y = (self.panel.height - self.iconSize) / 2 - 4,
+		caption = '',
+		padding = {0, 0, 0, 0},
+        itemPadding = {0, 0, 0, 0},
+        borderThickness = 0,
+        backgroundColor = {0, 0, 0, 0},
+        focusColor      = {0.4, 0.4, 0.4, 1},
+        children = {
+			-- FIXME: make it work with pr errorer
+--             Label:New {
+--                 x = 3,
+--                 y = 28,
+--                 height = 10,
+--                 font = { 
+--                     size = 17, 
+--                     outline = true,
+--                     autoOutlineColor = false,
+--                     outlineColor = { 1, 0, 0, 0.6 },
+--                 },
+--                 caption = "",
+--             },
+--             Label:New {
+--                 x = 28,
+--                 y = 3,
+--                 height = 10,
+--                 font = { 
+--                     size = 14, 
+--                     outline = true,
+--                     autoOutlineColor = false,
+--                     outlineColor = { 0, 1, 0, 0.6 },
+--                 },
+--                 caption = "",
+--             },
+            Image:New {
+                x = 4,
+                y = 4,
+                width = self.iconSize,
+                height = self.iconSize,
+                margin = {0, 0, 0, 0},
+                file = CHILI_LOBBY_IMG_DIR .. "warning_off.png",
+            },
+        },
+	}
+    self.panel:AddChild(self.btnErrors)
 end
