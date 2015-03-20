@@ -100,8 +100,18 @@ function ReadyCheckWindow:init(queue, responseTime, queueWindow)
 	
 	self.onReadyCheckResult = function(listener, queueId, result)
 		if result == "pass" then
-			self.lblReadyCheck.x = 60			
-			self.lblReadyCheck:SetCaption("Success! Game starting...")
+			self.lblReadyCheck.x = 60
+			self.lblReadyCheck:SetCaption("Game starting soon...")
+            
+            self.onConnectUser = function(listener, ip, port, engine)
+                WG.Delay(function()
+                    local springURL = "spring://" .. lobby:GetMyUserName() .. ":12345@" .. ip .. ":" .. port
+                    Spring.Echo(springURL)
+                    Spring.Restart(springURL, "")
+                    lobby:RemoveListener(self.onConnect)
+                end, 3)
+            end
+            lobby:AddListener("OnConnectUser", self.onConnectUser)
 		else
 			self.lblReadyCheck.x = 60
 			self.lblReadyCheck:SetCaption("Failed! Reentering queue...")
