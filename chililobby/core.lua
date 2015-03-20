@@ -1,15 +1,19 @@
 local includes = {
+    -- order matters
     "headers/exports.lua",
+    "components/configuration.lua",
+
     "components/component.lua",
+    "components/list_window.lua",
     "components/console.lua",
+
     "components/status_bar.lua",
     "components/login_window.lua",
     "components/downloader.lua",
     "components/chat_windows.lua",
     "components/play_window.lua",
     "components/background.lua",
-    "components/configuration.lua",
-    "components/battle_list_window.lua",    
+    "components/battle_list_window.lua",
     "components/battle_room_window.lua",
     "components/user_list_panel.lua",
 

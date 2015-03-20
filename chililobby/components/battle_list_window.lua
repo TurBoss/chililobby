@@ -1,62 +1,8 @@
-BattleListWindow = LCS.class{}
+BattleListWindow = ListWindow:extends{}
 
 function BattleListWindow:init(parent)
-    self.battlePanelMapping = {}
-    self.orderPanelMapping = {}
-
-    self.lblCustomGames = Label:New {
-        x = 20,
-        right = 5,
-        y = 5,
-        height = 20,
-        font = { size = 20 },
-        caption = "Custom games",
-    }
-
-    self.btnQuitBattle = Button:New {
-        right = 10,
-        y = 0,
-        width = 60,
-        height = 35,
-        caption = Configuration:GetErrorColor() .. "Close\b",
-        OnClick = {
-            function()
-                self.window:Hide() --Dispose()
-            end
-        },
-    }
-
-    self.battlePanel = ScrollPanel:New {
-        x = 5,
-        right = 5,
-        y = 50,
-        bottom = 5,
-        borderColor = {0,0,0,0},
-        horizontalScrollbar = false,
-    }
-
-    self.window = Window:New {
-        x = 250,
-        right = 5,
-        y = 0,
-        bottom = 5,
-        parent = parent,
-        resizable = false,
-        draggable = false,
-        padding = {0, 20, 0, 0},
-        children = {
-            self.lblCustomGames,
-            self.battlePanel,
-            self.btnQuitBattle
-        },
-        OnDispose = { 
-            function()
-                self:RemoveListeners()
-            end
-        },
-    }
-
-
+    self:super("init", parent, "Custom games")
+ 
     local update = function() self:Update() end
 
     self.onBattleOpened = function(listener, battleID)
@@ -65,7 +11,7 @@ function BattleListWindow:init(parent)
     lobby:AddListener("OnBattleOpened", self.onBattleOpened)
 
     self.onBattleClosed = function(listener, battleID)
-        self:RemoveBattle(battleID)
+        self:RemoveRow(battleID)
     end
     lobby:AddListener("OnBattleClosed", self.onBattleClosed)
 
@@ -90,44 +36,8 @@ function BattleListWindow:RemoveListeners()
 end
 
 function BattleListWindow:Update()
-    self.battlePanel:ClearChildren()
+    self.listPanel:ClearChildren()
 
---     self.battlePanel:AddChild(
---         Label:New {
---             x = 0,
---             width = 100,
---             y = 0,
---             height = 20,
---             caption = "Players",
---         }
---     )
---     self.battlePanel:AddChild(
---         Label:New {
---             x = 60,
---             width = 100,
---             y = 0,
---             height = 20,
---             caption = "Title",
---         }
---     )
---     self.battlePanel:AddChild(
---         Label:New {
---             x = 265,
---             width = 100,
---             y = 0,
---             height = 20,
---             caption = "Game",
---         }
---     )
---     self.battlePanel:AddChild(
---         Label:New {
---             x = 470,
---             width = 100,
---             y = 0,
---             height = 20,
---             caption = "Map",
---         }
---     )
     local battles = lobby:GetBattles()
     Spring.Echo("Number of battles: " .. lobby:GetBattleCount())
     local tmp = {}
@@ -146,19 +56,16 @@ function BattleListWindow:Update()
     end
 end
 
-function BattleListWindow:GetElementCount()
-    return #self.battlePanel.children
-end
-
-function BattleListWindow:AddBattle(battle)	
-    local index = self:GetElementCount() + 1
+function BattleListWindow:AddBattle(battle)
+    local h = 60
     local children = {}
 
     local lblPlayers = Label:New {
         x = 5,
         width = 50,
         y = 5,
-        height = 20,
+        height = h - 10,
+        valign = 'center',
         caption = #battle.users .. "/" .. battle.maxPlayers,
     }
     table.insert(children, lblPlayers)
@@ -167,7 +74,8 @@ function BattleListWindow:AddBattle(battle)
         x = 60,
         width = 200,
         y = 5,
-        height = 20,
+        height = h - 10,
+        valign = 'center',
         caption = battle.title:sub(1, 22),
         tooltip = battle.title, 
     }
@@ -176,7 +84,8 @@ function BattleListWindow:AddBattle(battle)
     if battle.passworded then
         local imgPassworded = Image:New {
             file = CHILI_LOBBY_IMG_DIR .. "lock.png",
-            height = 20,
+            y = 5,
+            height = h - 10,
             width = 20,
             margin = {0, 0, 0, 0},
             x = lblTitle.x + lblTitle.font:GetTextWidth(lblTitle.caption) + 10,
@@ -188,7 +97,8 @@ function BattleListWindow:AddBattle(battle)
         x = 265,
         width = 200,
         y = 5,
-        height = 20,
+        height = h - 10,
+        valign = 'center',
         caption = battle.gameName:sub(1, 22) .. (VFS.HasArchive(battle.gameName) and ' [' .. Configuration:GetSuccessColor() .. '✔\b]' or ' [' .. Configuration:GetErrorColor() .. '✘\b]'),
         tooltip = battle.gameName, 
     }
@@ -198,7 +108,8 @@ function BattleListWindow:AddBattle(battle)
         x = 470,
         width = 200,
         y = 5,
-        height = 20,
+        height = h - 10,
+        valign = 'center',
         caption = battle.map:sub(1, 22) .. (VFS.HasArchive(battle.map) and ' [' .. Configuration:GetSuccessColor() .. '✔\b]' or ' [' .. Configuration:GetErrorColor() .. '✘\b]'),
         tooltip = battle.map, 
     }
@@ -206,9 +117,9 @@ function BattleListWindow:AddBattle(battle)
 
     local btnJoin = Button:New {
         x = 675,
-        width = 60,
-        y = 0,
-        height = 30,
+        width = 100,
+        y = 5,
+        height = h - 10,
         caption = "Join",
         OnClick = {
             function()
@@ -218,83 +129,26 @@ function BattleListWindow:AddBattle(battle)
     }
     table.insert(children, btnJoin)
 
-    local panel = Control:New {
-        x = 0,
-        width = "100%",
-        y = (index - 1) * 50,
-        height = 40,
-        children = children,
-        battleID = battle.battleID,
-        index = index,
-    }
-    self.battlePanel:AddChild(panel)
-    self.battlePanelMapping[battle.battleID] = panel
-    self.orderPanelMapping[index] = panel
+    self:AddRow(children, battle.battleID)
 end
 
-function BattleListWindow:RemoveBattle(battleID)
-    local panel = self.battlePanelMapping[battleID]
-    local index = panel.index
-
-    -- move elements up
-    while index < self:GetElementCount() - 1 do
-        local pnl = self.orderPanelMapping[index + 1]
-        pnl = (index - 1) * 50
-        pnl = index
-        self.orderPanelMapping[index] = pnl
-        index = index + 1
-        pnl:Invalidate()
-    end
-    self.orderPanelMapping[index] = nil
-    
-    self.battlePanel:RemoveChild(panel)
-    self.battlePanelMapping[battleID] = nil
-end
-
-function BattleListWindow:SwapPlaces(panel1, panel2)
-    tmp = panel1.index
-
-    panel1.index = panel2.index
-    panel1.y = (panel1.index - 1) * 50
-    panel1:Invalidate()
-
-    panel2.index = tmp
-    panel2.y = (panel2.index - 1) * 50
-    panel2:Invalidate()
+function BattleListWindow:CompareItems(id1, id2)
+    local battle1, battle2 = lobby:GetBattle(id1), lobby:GetBattle(id2)
+    return #battle1.users - #battle2.users
 end
 
 function BattleListWindow:JoinedBattle(battleID)
-    local panel = self.battlePanelMapping[battleID]
     local battle = lobby:GetBattle(battleID)
-    panel.children[1]:SetCaption(#battle.users .. "/" .. battle.maxPlayers)
-
-    -- move panel up if needed
-    while panel.index > 1 do
-        local pnl = self.orderPanelMapping[panel.index - 1]
-        local btl = lobby:GetBattle(pnl.battleID)
-        if #battle.users > #btl.users then
-            self:SwapPlaces(panel, pnl)
-        else
-            return
-        end
-    end
+    local items = self:GetRowItems(battleID)
+    items[1]:SetCaption(#battle.users .. "/" .. battle.maxPlayers)
+    self:RecalculatePosition(battleID)
 end
 
 function BattleListWindow:LeftBattle(battleID)
-    local panel = self.battlePanelMapping[battleID]
     local battle = lobby:GetBattle(battleID)
-    panel.children[1]:SetCaption(#battle.users .. "/" .. battle.maxPlayers)
-
-    -- move panel down if needed
-    while panel.index < self:GetElementCount() - 1 do
-        local pnl = self.orderPanelMapping[panel.index + 1]
-        local btl = lobby:GetBattle(pnl.battleID)
-        if #battle.users < #btl.users then
-            self:SwapPlaces(panel, pnl)
-        else
-            return
-        end
-    end
+    local items = self:GetRowItems(battleID)
+    items[1]:SetCaption(#battle.users .. "/" .. battle.maxPlayers)
+    self:RecalculatePosition(battleID)
 end
 
 function BattleListWindow:JoinBattle(battle)

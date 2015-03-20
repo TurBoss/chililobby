@@ -1,60 +1,14 @@
-QueueListWindow = LCS.class{}
+QueueListWindow = ListWindow:extends{}
 
 function QueueListWindow:init(parent)
-    self.lblQueues = Label:New {
-        x = 20,
-        right = 5,
-        y = 5,
-        height = 20,
-        font = { size = 20 },
-        caption = "Queues",
-    }
+    self:super("init", parent, "Queues")
 
-    self.btnQuitQueue = Button:New {
-        right = 10,
-        y = 0,
-        width = 60,
-        height = 35,
-        caption = Configuration:GetErrorColor() .. "Close\b",
-        OnClick = {
-            function()
-                self.window:Hide() --Dispose()
-            end
-        },
-    }
-
-    self.queuePanel = ScrollPanel:New {
-        x = 5,
-        right = 5,
-        y = 50,
-        bottom = 10,
-        borderColor = {0,0,0,0},
-        horizontalScrollbar = false,
-    }
-
-    self.window = Window:New {
-        x = 250,
-        right = 5,
-        y = 0,
-        bottom = 5,
-        parent = parent,
-        resizable = false,
-        draggable = false,
-        padding = {0, 20, 0, 0},
-        children = {
-            self.lblQueues,
-            self.queuePanel,
-            self.btnQuitQueue
-        },
-        OnDispose = {
-            function()
-                self:RemoveListeners()
-            end
-        },
-    }
-
-    self.onQueueOpened = function() self:Update() end
-    self.onQueueClosed = function() self:Update() end
+    self.onQueueOpened = function(listener, queue)
+        self:AddQueue(queue)
+    end
+    self.onQueueClosed = function(listener, queueId)
+        self:RemoveRow(queueId)
+    end
     self.OnListQueues = function() self:Update() end
     lobby:AddListener("OnQueueOpened", self.onQueueOpened)
     lobby:AddListener("OnQueueClosed", self.onQueueClosed)
@@ -70,7 +24,7 @@ function QueueListWindow:RemoveListeners()
 end
 
 function QueueListWindow:Update()
-    self.queuePanel:ClearChildren()
+    self.listPanel:ClearChildren()
 
     local queues = lobby:GetQueues()
     for _, queue in pairs(queues) do
@@ -80,7 +34,6 @@ end
 
 function QueueListWindow:AddQueue(queue)
     local h = 60
-    local padding = 20
     local children = {}
 
     local img = "spring.png"
@@ -115,8 +68,8 @@ function QueueListWindow:AddQueue(queue)
     local imgGame = Image:New {
         x = 0,
         width = h - 10,
-        y = 5,
-        height = h - 10,
+        y = 10,
+        height = h - 20,
         file = CHILI_LOBBY_IMG_DIR .. "games/" .. img,
     }
 
@@ -150,8 +103,8 @@ function QueueListWindow:AddQueue(queue)
     btnJoin = Button:New {
         x = lblTitle.x + lblTitle.width + 20,
         width = 120,
-        y = 0,
-        height = h,
+        y = 5,
+        height = h - 10,
         caption = "Join",
         font = { size = 18 },
         OnMouseUp = {
@@ -168,8 +121,8 @@ function QueueListWindow:AddQueue(queue)
     btnDownload = Button:New {
         x = lblTitle.x + lblTitle.width + 20,
         width = 120,
-        y = 0,
-        height = h,
+        y = 5,
+        height = h - 10,
         caption = "Download",
         font = { size = 18 },
         OnMouseUp = {
@@ -197,39 +150,14 @@ function QueueListWindow:AddQueue(queue)
     else
         Spring.Echo("[" .. queue.title .. "] " .. "Missing " .. tostring(#missingGames) .. " games and " .. tostring(#missingMaps) .. " maps.")
     end
-    local ctrlLeft = Control:New {
-        width = btnJoin.x + btnJoin.width,
-        y = 0,
-        height = h,
-        padding = {0, 0, 0, 0},
-        children = {
-            lblTitle,
-            imgGame,
-            btnQueue,
-        },
-    }
-    table.insert(children, LayoutPanel:New {
-        x = 0,
-        right = 0,
-        height = h,
-        padding = {0, 0, 0, 0},
-        itemMargin    = {0, 0, 0, 0},
-        itemPadding   = {0, 0, 0, 0},
-        children = {
-            ctrlLeft
-        },
-    })
 
-    self.queuePanel:AddChild(Window:New {
-        x = 0,
-        right = 0,
-        y = 10 + #self.queuePanel.children * (h + padding),
-        height = h,
-        children = children,
-        resizable = false,
-        draggable = false,
-        padding={0,0,0,0},
-    })
+    local items = {
+        lblTitle,
+        imgGame,
+        btnQueue,
+    }
+
+    self:AddRow(items, queue.queueId)
 end
 
 function QueueListWindow:JoinQueue(queue, btnJoin)

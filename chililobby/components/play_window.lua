@@ -114,6 +114,7 @@ function PlayWindow:init()
         width = "60%",
         y = 65,
         bottom = 0,
+        minWidth = 700,
         parent = screen0,
         resizable = false,
         draggable = false,
