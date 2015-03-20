@@ -1,7 +1,7 @@
 StatusBar = Component:extends{}
 
 function StatusBar:init()
-	self:super('init')
+    self:super('init')
     self.panel = Window:New {
         x = 10,
         right = 10,
@@ -15,25 +15,25 @@ function StatusBar:init()
         padding = {0, 0, 0, 0},
     }
 
-	-- configuration
-	self.showConnectionStatus = false
-	self.showServerStatus = false
-	self.showPlayerWelcome = true
-	
-	-- aligning
-	self.iconSize = 32
-	self.imagePadding = 8
-	self.itemPadding = 10
-	
-	if self.showConnectionStatus then self:AddConnectionStatus() end
+    -- configuration
+    self.showConnectionStatus = false
+    self.showServerStatus = false
+    self.showPlayerWelcome = true
+
+    -- aligning
+    self.iconSize = 32
+    self.imagePadding = 8
+    self.itemPadding = 10
+
+    if self.showConnectionStatus then self:AddConnectionStatus() end
     if self.showServerStatus then self:AddServerStatus() end
-	if self.showPlayerWelcome then self:AddPlayerWelcome() end
-	
-	-- this order must be preserved for aligning
-	self:AddMenuIcon()
-	self:AddFriendsIcon()
-	self:AddDownloadsIcon()
-	self:AddErrorsIcon()
+    if self.showPlayerWelcome then self:AddPlayerWelcome() end
+
+    -- this order must be preserved for aligning
+    self:AddMenuIcon()
+    self:AddFriendsIcon()
+    self:AddDownloadsIcon()
+    self:AddErrorsIcon()
 end
 
 function StatusBar:AddConnectionStatus()
@@ -64,7 +64,7 @@ function StatusBar:AddConnectionStatus()
         self.lblPing:SetCaption(color .. latency .. "ms\b")
     end
     lobby:AddListener("OnPong", updateStatus)
-    
+
     lobby:AddListener("OnAccepted", 
         function(listener)
             lobby:Ping()
@@ -133,7 +133,7 @@ function StatusBar:AddServerStatus()
     )
     lobby:AddListener("OnBattleOpened", updateBattleCount)
     lobby:AddListener("OnBattleClosed", updateBattleCount)
-    
+
     self.panel:AddChild(self.lblBattlesOpen)
 
     -- queues 
@@ -172,11 +172,11 @@ end
 function StatusBar:AddFriendsIcon()
     self.btnFriends = Button:New {
         right = self.btnMenu.right + self.btnMenu.width + self.itemPadding,
-		width = self.iconSize + self.imagePadding,
-		height = self.iconSize + self.imagePadding,
-		y = (self.panel.height - self.iconSize) / 2 - 4,
-		caption = '',
-		padding = {0, 0, 0, 0},
+        width = self.iconSize + self.imagePadding,
+        height = self.iconSize + self.imagePadding,
+        y = (self.panel.height - self.iconSize) / 2 - 4,
+        caption = '',
+        padding = {0, 0, 0, 0},
         itemPadding = {0, 0, 0, 0},
         borderThickness = 0,
         backgroundColor = {0, 0, 0, 0},
@@ -215,7 +215,7 @@ function StatusBar:AddFriendsIcon()
                 file = CHILI_LOBBY_IMG_DIR .. "friends_off.png",
             },
         },
-	}
+    }
     self.onFriend = function(listener)
         local onlineFriends = {}
         for key, friend in pairs(lobby:GetFriends()) do
@@ -247,8 +247,8 @@ function StatusBar:AddPlayerWelcome()
             size = 16,
         },
     }
-	
-	lobby:AddListener("OnAccepted", 
+
+    lobby:AddListener("OnAccepted", 
         function(listener)
             self.lblPlayerIcon:SetCaption("Welcome " .. lobby:GetMyUserName())
             --self.lblPlayerIcon:SetCaption("Welcome 12345123451234512345!")
@@ -261,7 +261,7 @@ end
 function StatusBar:AddMenuIcon()
     self.btnSettings = Button:New {
         width = 100, height = 40,
-        caption = "Settings",                
+        caption = "Settings",
     }
     self.btnLogout = Button:New {
         width = 100, height = 40,
@@ -274,11 +274,11 @@ function StatusBar:AddMenuIcon()
     }
     self.btnMenu = ComboBox:New {
         right = 5,
-		width = self.iconSize + self.imagePadding,
-		height = self.iconSize + self.imagePadding,
-		y = (self.panel.height - self.iconSize) / 2 - 4,
-		caption = '',
-		padding = {0, 0, 0, 0},
+        width = self.iconSize + self.imagePadding,
+        height = self.iconSize + self.imagePadding,
+        y = (self.panel.height - self.iconSize) / 2 - 4,
+        caption = '',
+        padding = {0, 0, 0, 0},
         itemPadding = {0, 0, 0, 0},
         borderThickness = 0,
         backgroundColor = {0, 0, 0, 0},
@@ -301,7 +301,7 @@ function StatusBar:AddMenuIcon()
             self.btnLogout,
             self.btnQuit,
         },
-	}
+    }
     self.btnMenu.OnSelect = {
         function(obj, itemIdx, selected)
             if selected then
@@ -316,18 +316,18 @@ function StatusBar:AddMenuIcon()
             end
         end
     }
-    
+
     self.panel:AddChild(self.btnMenu)
 end
 
 function StatusBar:AddDownloadsIcon()
     self.btnDownloads = Button:New {
         right = self.btnFriends.right + self.btnFriends.width + self.itemPadding,
-		width = self.iconSize + self.imagePadding,
-		height = self.iconSize + self.imagePadding,
-		y = (self.panel.height - self.iconSize) / 2 - 4,
-		caption = '',
-		padding = {0, 0, 0, 0},
+        width = self.iconSize + self.imagePadding,
+        height = self.iconSize + self.imagePadding,
+        y = (self.panel.height - self.iconSize) / 2 - 4,
+        caption = '',
+        padding = {0, 0, 0, 0},
         itemPadding = {0, 0, 0, 0},
         borderThickness = 0,
         backgroundColor = {0, 0, 0, 0},
@@ -366,48 +366,59 @@ function StatusBar:AddDownloadsIcon()
                 file = CHILI_LOBBY_IMG_DIR .. "download_off.png",
             },
         },
-	}
+    }
     self.panel:AddChild(self.btnDownloads)
-	self.downloads = 0
+    self.downloads = 0
+end
+
+function StatusBar:UpdateDownloadStatus()
+    if self.downloads > 0 then
+        self.btnDownloads.children[1]:SetCaption("\255\0\200\0" .. tostring(self.downloads) .. "\b")
+        self.btnDownloads.children[3].file = CHILI_LOBBY_IMG_DIR .. "download.png"
+    else
+        self.btnDownloads.children[1]:SetCaption("")
+        self.btnDownloads.children[3].file = CHILI_LOBBY_IMG_DIR .. "download_off.png"
+    end
 end
 
 function StatusBar:DownloadStarted(...)
-	Spring.Echo("Download started")
+    Spring.Echo("Download started")
+    self:UpdateDownloadStatus()
 end
 
 function StatusBar:DownloadQueued(...)
-	Spring.Echo("Download finished")
-	self.downloads = self.downloads + 1
-	self.btnDownloads.children[1]:SetCaption("\255\0\200\0" .. tostring(self.downloads) .. "\b")
-	self.btnDownloads.children[3].file = CHILI_LOBBY_IMG_DIR .. "download.png"
+    Spring.Echo("Download finished")
+    self.downloads = self.downloads + 1
+    self:UpdateDownloadStatus()
 end
 
 function StatusBar:DownloadFinished(...)
-	Spring.Echo("Download finished")
-	self.downloads = self.downloads - 1
-	if self.downloads > 0 then
-		self.btnDownloads.children[1]:SetCaption("\255\0\200\0" .. tostring(self.downloads) .. "\b")
-	else		
-		self.btnDownloads.children[1]:SetCaption("")
-		self.btnDownloads.children[3].file = CHILI_LOBBY_IMG_DIR .. "download_off.png"
-	end
+    Spring.Echo("Download finished")
+    self.downloads = self.downloads - 1
+    self:UpdateDownloadStatus()
+end
+
+function StatusBar:DownloadFailed(...)
+    Spring.Echo("Download failed")
+    self.downloads = self.downloads - 1
+    self:UpdateDownloadStatus()
 end
 
 
 function StatusBar:AddErrorsIcon()
     self.btnErrors = Button:New {
         right = self.btnDownloads.right + self.btnDownloads.width + self.itemPadding,
-		width = self.iconSize + self.imagePadding,
-		height = self.iconSize + self.imagePadding,
-		y = (self.panel.height - self.iconSize) / 2 - 4,
-		caption = '',
-		padding = {0, 0, 0, 0},
+        width = self.iconSize + self.imagePadding,
+        height = self.iconSize + self.imagePadding,
+        y = (self.panel.height - self.iconSize) / 2 - 4,
+        caption = '',
+        padding = {0, 0, 0, 0},
         itemPadding = {0, 0, 0, 0},
         borderThickness = 0,
         backgroundColor = {0, 0, 0, 0},
         focusColor      = {0.4, 0.4, 0.4, 1},
         children = {
-			-- FIXME: make it work with pr errorer
+            -- FIXME: make it work with pr errorer
 --             Label:New {
 --                 x = 3,
 --                 y = 28,
@@ -441,6 +452,6 @@ function StatusBar:AddErrorsIcon()
                 file = CHILI_LOBBY_IMG_DIR .. "warning_off.png",
             },
         },
-	}
+    }
     self.panel:AddChild(self.btnErrors)
 end
