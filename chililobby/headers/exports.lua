@@ -23,6 +23,7 @@ if WG and WG.Chili then
     screen0 = Chili.Screen0
     Progressbar = Chili.Progressbar
 end
+
 --lobby export
 if WG and WG.LibLobby then
     LibLobby = WG.LibLobby
@@ -35,3 +36,4 @@ end
 
 i18n.loadFile(CHILILOBBY_DIR .. "i18n/chililobby.lua")
 i18n.setLocale('sr')
+i18n.setLocale('jp')

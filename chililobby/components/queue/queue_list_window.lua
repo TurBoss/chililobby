@@ -9,18 +9,18 @@ function QueueListWindow:init(parent)
         font = { size = 20 },
         caption = "Queues",
     }
-	
-	self.btnQuitQueue = Button:New {
+
+    self.btnQuitQueue = Button:New {
         right = 10,
-		y = 0,
+        y = 0,
         width = 60,
-		height = 35,
-		caption = Configuration:GetErrorColor() .. "Close\b",
-		OnClick = {
-			function()
-				self.window:Hide() --Dispose()
-			end
-		},
+        height = 35,
+        caption = Configuration:GetErrorColor() .. "Close\b",
+        OnClick = {
+            function()
+                self.window:Hide() --Dispose()
+            end
+        },
     }
 
     self.queuePanel = ScrollPanel:New {
@@ -28,10 +28,10 @@ function QueueListWindow:init(parent)
         right = 5,
         y = 50,
         bottom = 10,
-		borderColor = {0,0,0,0},
+        borderColor = {0,0,0,0},
         horizontalScrollbar = false,
     }
-	
+
     self.window = Window:New {
         x = 250,
         right = 5,
@@ -39,12 +39,12 @@ function QueueListWindow:init(parent)
         bottom = 5,
         parent = parent,
         resizable = false,
-		draggable = false,
+        draggable = false,
         padding = {0, 20, 0, 0},
         children = {
             self.lblQueues,
             self.queuePanel,
-			self.btnQuitQueue
+            self.btnQuitQueue
         },
         OnDispose = {
             function()
@@ -53,20 +53,20 @@ function QueueListWindow:init(parent)
         },
     }
 
-	self.onQueueOpened = function() self:Update() end
-	self.onQueueClosed = function() self:Update() end
-	self.OnListQueues = function() self:Update() end
+    self.onQueueOpened = function() self:Update() end
+    self.onQueueClosed = function() self:Update() end
+    self.OnListQueues = function() self:Update() end
     lobby:AddListener("OnQueueOpened", self.onQueueOpened)
     lobby:AddListener("OnQueueClosed", self.onQueueClosed)
-	lobby:AddListener("OnListQueues", self.OnListQueues)
+    lobby:AddListener("OnListQueues", self.OnListQueues)
 
     self:Update()
 end
 
 function QueueListWindow:RemoveListeners()
     lobby:RemoveListener("OnQueueOpened", self.onQueueOpened)
-	lobby:RemoveListener("OnQueueClosed", self.onQueueClosed)
-	lobby:RemoveListener("OnListQueues", self.OnListQueues)
+    lobby:RemoveListener("OnQueueClosed", self.onQueueClosed)
+    lobby:RemoveListener("OnListQueues", self.OnListQueues)
 end
 
 function QueueListWindow:Update()
@@ -82,7 +82,7 @@ function QueueListWindow:AddQueue(queue)
     local h = 60
     local padding = 20
     local children = {}
-    
+
     local img = "spring.png"
     local detected = false
     for _, game in pairs(queue.gameNames) do
@@ -119,7 +119,7 @@ function QueueListWindow:AddQueue(queue)
         height = h - 10,
         file = CHILI_LOBBY_IMG_DIR .. "games/" .. img,
     }
-    
+
     local lblTitle = Label:New {
         x = h + 10,
         width = 150,
@@ -145,7 +145,7 @@ function QueueListWindow:AddQueue(queue)
             table.insert(missingGames, game)
         end
     end
-    
+
     local btnJoin
     btnJoin = Button:New {
         x = lblTitle.x + lblTitle.width + 20,
@@ -234,10 +234,10 @@ end
 
 function QueueListWindow:JoinQueue(queue, btnJoin)
     self.onJoinQueue = function(listener)
-		QueueWindow(queue)
-		lobby:RemoveListener("OnJoinQueue", self.onJoinQueue)
+        QueueWindow(queue)
+        lobby:RemoveListener("OnJoinQueue", self.onJoinQueue)
         self.window:Hide() --Dispose()
-		btnJoin.state.pressed = false
+        btnJoin.state.pressed = false
     end
     lobby:AddListener("OnJoinQueue", self.onJoinQueue)
     lobby:JoinQueue(queue.queueId)

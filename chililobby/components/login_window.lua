@@ -2,37 +2,37 @@ LoginWindow = LCS.class{}
 
 --TODO: make this a util function, maybe even add this support to chili as a whole?
 function createTabGroup(ctrls)
-	for i = 1, #ctrls do
-		local ctrl1 = ctrls[i]
-		local ctrl2 = ctrls[i + 1]
-		if ctrl2 == nil then
-			ctrl2 = ctrls[1]
-		end
+    for i = 1, #ctrls do
+        local ctrl1 = ctrls[i]
+        local ctrl2 = ctrls[i + 1]
+        if ctrl2 == nil then
+            ctrl2 = ctrls[1]
+        end
 
-		if ctrl1.OnKeyPress == nil then
-			ctrl1.OnKeyPress = {}
-		end
+        if ctrl1.OnKeyPress == nil then
+            ctrl1.OnKeyPress = {}
+        end
 
-		table.insert(ctrl1.OnKeyPress,
-			function(obj, key, mods, ...)
-				if key == Spring.GetKeyCode("tab") then
-					screen0:FocusControl(ctrl2)
-				end
-			end
-		)
-	end
+        table.insert(ctrl1.OnKeyPress,
+            function(obj, key, mods, ...)
+                if key == Spring.GetKeyCode("tab") then
+                    screen0:FocusControl(ctrl2)
+                end
+            end
+        )
+    end
 end
 
 function LoginWindow:init()
-	self.scale = 1.4 * Configuration:GetScale()
-	self.fontSize = 14
+    self.scale = 1.4 * Configuration:GetScale()
+    self.fontSize = 14
     self.lblInstructions = Label:New {
         x = 1,
         width = 100 * self.scale,
         y = 20 * self.scale,
         height = 20 * self.scale,
         caption = i18n("connect_to_spring_server"),
-		font = { size = self.scale * self.fontSize},
+        font = { size = self.scale * self.fontSize},
     }
 
     self.lblUsername = Label:New {
@@ -41,7 +41,7 @@ function LoginWindow:init()
         y = 50 * self.scale,
         height = 20 * self.scale,
         caption = i18n("username") .. ":",
-		font = { size = self.scale * self.fontSize},
+        font = { size = self.scale * self.fontSize},
     }
     self.ebUsername = EditBox:New {
         x = 80 * self.scale,
@@ -49,7 +49,7 @@ function LoginWindow:init()
         y = 50 * self.scale,
         height = 20 * self.scale,
         text = "",
-		font = { size = self.scale * self.fontSize},
+        font = { size = self.scale * self.fontSize},
     }
 
     self.lblPassword = Label:New {
@@ -58,7 +58,7 @@ function LoginWindow:init()
         y = 75 * self.scale,
         height = 20 * self.scale,
         caption = i18n("password") .. ":",
-		font = { size = self.scale * self.fontSize},
+        font = { size = self.scale * self.fontSize},
     }
     self.ebPassword = EditBox:New {
         x = 80 * self.scale,
@@ -67,7 +67,7 @@ function LoginWindow:init()
         height = 20 * self.scale,
         text = "",
         passwordInput = true,
-		font = { size = self.scale * self.fontSize},
+        font = { size = self.scale * self.fontSize},
         OnKeyPress = {
             function(obj, key, mods, ...)
                 if key == Spring.GetKeyCode("enter") or 
@@ -77,28 +77,28 @@ function LoginWindow:init()
             end
         },
     }
-	
+
     self.btnLogin = Button:New {
         x = 1,
         width = 80 * self.scale,
         bottom = 1,
         height = 40 * self.scale,
         caption = i18n("login_verb"),
-		font = { size = self.scale * self.fontSize},
+        font = { size = self.scale * self.fontSize},
         OnClick = {
             function()
                 self:tryLogin()
             end
         },
     }
-    
+
     self.btnRegister = Button:New {
         right = 1,
         width = 80 * self.scale,
         bottom = 1,
         height = 40 * self.scale,
         caption = i18n("register_verb"),
-		font = { size = self.scale * self.fontSize},
+        font = { size = self.scale * self.fontSize},
         OnClick = {
             function()
                 self:tryRegister()
@@ -114,12 +114,12 @@ function LoginWindow:init()
         caption = "",
         font = {
             color = { 1, 0, 0, 1 },
-			size = self.fontSize * self.scale,
+            size = self.fontSize * self.scale,
         },
     }
 
-	local ww, wh = Spring.GetWindowGeometry()
-	local w, h = 265 * self.scale, 220 * self.scale
+    local ww, wh = Spring.GetWindowGeometry()
+    local w, h = 265 * self.scale, 220 * self.scale
     self.window = Window:New {
         x = (ww - w) / 2,
         y = (wh - h) / 2,
@@ -145,8 +145,8 @@ function LoginWindow:init()
         },
     }
 
-	createTabGroup({self.ebUsername, self.ebPassword})
-	screen0:FocusControl(self.ebUsername)
+    createTabGroup({self.ebUsername, self.ebPassword})
+    screen0:FocusControl(self.ebUsername)
     -- FIXME: this should probably be moved to the lobby wrapper
     self.loginAttempts = 0
     self.ebUsername:SetText(Configuration.userName)
@@ -191,7 +191,7 @@ function LoginWindow:tryLogin()
     Configuration.password = password
     Configuration.autoLogin = true
     Configuration:SaveConfig()
-    
+
     password = VFS.CalcMd5(password)
 
 
@@ -251,7 +251,7 @@ function LoginWindow:OnRegister()
         self.lblError:SetCaption(err)
         --lobby:RemoveListener("OnRegistrationDenied", listener)
     end)
-    
+
 end
 
 function LoginWindow:OnConnected()
@@ -295,7 +295,7 @@ function LoginWindow:createAgreementWindow()
         y = 1,
         height = "100%",
         text = self.agreementText,
-		font = { size = self.scale * self.fontSize},
+        font = { size = self.scale * self.fontSize},
     }
     self.btnYes = Button:New {
         x = 1,
@@ -303,7 +303,7 @@ function LoginWindow:createAgreementWindow()
         bottom = 1,
         height = 40 * self.scale,
         caption = "Accept",
-		font = { size = self.scale * self.fontSize},
+        font = { size = self.scale * self.fontSize},
         OnClick = {
             function()
                 self:acceptAgreement()
@@ -316,7 +316,7 @@ function LoginWindow:createAgreementWindow()
         bottom = 1,
         height = 40 * self.scale,
         caption = "Decline",
-		font = { size = self.scale * self.fontSize},
+        font = { size = self.scale * self.fontSize},
         OnClick = {
             function()
                 self:declineAgreement()

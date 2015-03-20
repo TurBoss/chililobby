@@ -1,10 +1,10 @@
 QueueWindow = LCS.class{}
 
 function QueueWindow:init(queue)
-	local joinedQueueTime = Spring.GetGameSeconds()
+    local joinedQueueTime = Spring.GetGameSeconds()
     local lastUpdate = Spring.GetGameSeconds()
 
-	self.lblStatus = Label:New {
+    self.lblStatus = Label:New {
         x = 10,
         y = 25,
         width = 100,
@@ -24,7 +24,7 @@ function QueueWindow:init(queue)
         end,
     }
 
-	self.queueWindow = Window:New {
+    self.queueWindow = Window:New {
         caption = queue.title,
         x = 10,
         y = 520,
@@ -44,18 +44,18 @@ function QueueWindow:init(queue)
                 OnClick = { function () lobby:LeaveQueue(queue.queueId) end },
             },
         },
-		OnDispose = { function() self:RemoveListeners() end },
+        OnDispose = { function() self:RemoveListeners() end },
     }
 
     self.onReadyCheck = function(listener, queueId, responseTime)
         if queueId == queue.queueId then
-			self.queueWindow:Hide()
+            self.queueWindow:Hide()
             ReadyCheckWindow(queue, responseTime, self.queueWindow)
         end
     end
     lobby:AddListener("OnReadyCheck", self.onReadyCheck)
-	
-	self.onLeftQueue = function(listener, queueId, reason)
+
+    self.onLeftQueue = function(listener, queueId, reason)
         if queue.queueId == queueId then
             self.queueWindow:Dispose()
         end
@@ -64,6 +64,6 @@ function QueueWindow:init(queue)
 end
 
 function QueueWindow:RemoveListeners()
-	lobby:RemoveListener("OnLeftQueue", self.onLeftQueue)
-	lobby:RemoveListener("OnReadyCheck", self.onReadyCheck)
+    lobby:RemoveListener("OnLeftQueue", self.onLeftQueue)
+    lobby:RemoveListener("OnReadyCheck", self.onReadyCheck)
 end

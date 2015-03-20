@@ -4,7 +4,7 @@ VFS.Include("libs/liblobby/lobby/json.lua")
 
 -- all configuration attribute changes should use the :Set*Attribute*() and :Get*Attribute*() methods in order to assure proper functionality
 function Configuration:init()
-	self.scale = 1.2
+    self.scale = 1.2
     self.serverAddress = "localhost"
     --self.serverAddress = "springrts.com"
     self.serverPort = 8200
@@ -18,7 +18,7 @@ function Configuration:init()
     self.successColor = "\255\0\255\0"
     self.selectedColor = "\255\99\184\255"
     self.buttonFocusColor = {0.54,0.72,1,0.3}
-    self.buttonSelectedColor = {0.54,0.72,1,0.6}
+    self.buttonSelectedColor = {0.54,0.72,1,0.6}--{1.0, 1.0, 1.0, 1.0}
 
     self.configFile = ".chililobby/config.json"
     self:LoadConfig()
@@ -48,11 +48,11 @@ function Configuration:SaveConfig()
 end
 
 function Configuration:SetScale(scale)
-	self.scale = scale
+    self.scale = scale
 end
 
 function Configuration:GetScale()
-	return self.scale
+    return self.scale
 end
 
 function Configuration:GetServerAddress()
@@ -80,12 +80,12 @@ function Configuration:GetSelectedColor()
 end
 
 function Configuration:GetButtonFocusColor()
-	return self.buttonFocusColor
+    return self.buttonFocusColor
 end
 
 -- NOTE: this one is in opengl range [0,1]
 function Configuration:GetButtonSelectedColor()
-	return self.buttonSelectedColor
+    return self.buttonSelectedColor
 end
 
 -- shadow the Configuration class with a singleton

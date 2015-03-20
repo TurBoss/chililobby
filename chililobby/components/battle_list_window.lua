@@ -1,9 +1,9 @@
 BattleListWindow = LCS.class{}
 
 function BattleListWindow:init(parent)
-	self.battlePanelMapping = {}
-	self.orderPanelMapping = {}
-	
+    self.battlePanelMapping = {}
+    self.orderPanelMapping = {}
+
     self.lblCustomGames = Label:New {
         x = 20,
         right = 5,
@@ -12,18 +12,18 @@ function BattleListWindow:init(parent)
         font = { size = 20 },
         caption = "Custom games",
     }
-	
-	self.btnQuitBattle = Button:New {
+
+    self.btnQuitBattle = Button:New {
         right = 10,
-		y = 0,
-        width = 60,      
-		height = 35,		
-		caption = Configuration:GetErrorColor() .. "Close\b",
-		OnClick = {
-			function()
-				self.window:Hide() --Dispose()
-			end
-		},
+        y = 0,
+        width = 60,
+        height = 35,
+        caption = Configuration:GetErrorColor() .. "Close\b",
+        OnClick = {
+            function()
+                self.window:Hide() --Dispose()
+            end
+        },
     }
 
     self.battlePanel = ScrollPanel:New {
@@ -31,10 +31,10 @@ function BattleListWindow:init(parent)
         right = 5,
         y = 50,
         bottom = 5,
-		borderColor = {0,0,0,0},
+        borderColor = {0,0,0,0},
         horizontalScrollbar = false,
     }
-	
+
     self.window = Window:New {
         x = 250,
         right = 5,
@@ -47,46 +47,46 @@ function BattleListWindow:init(parent)
         children = {
             self.lblCustomGames,
             self.battlePanel,
-			self.btnQuitBattle
+            self.btnQuitBattle
         },
-		OnDispose = { 
-			function()
-				self:RemoveListeners()
-			end
-		},
+        OnDispose = { 
+            function()
+                self:RemoveListeners()
+            end
+        },
     }
 
-	
+
     local update = function() self:Update() end
-	
-	self.onBattleOpened = function(listener, battleID)
-		self:AddBattle(lobby:GetBattle(battleID))
-	end
-	lobby:AddListener("OnBattleOpened", self.onBattleOpened)
-	
-	self.onBattleClosed = function(listener, battleID)
-		self:RemoveBattle(battleID)
-	end
+
+    self.onBattleOpened = function(listener, battleID)
+        self:AddBattle(lobby:GetBattle(battleID))
+    end
+    lobby:AddListener("OnBattleOpened", self.onBattleOpened)
+
+    self.onBattleClosed = function(listener, battleID)
+        self:RemoveBattle(battleID)
+    end
     lobby:AddListener("OnBattleClosed", self.onBattleClosed)
-	
-	self.onJoinedBattle = function(listener, battleID)
-		self:JoinedBattle(battleID)
-	end
-	lobby:AddListener("OnJoinedBattle", self.onJoinedBattle)
-	
-	self.onLeftBattle = function(listener, battleID)
-		self:LeftBattle(battleID)
-	end
-	lobby:AddListener("OnLeftBattle", self.onLeftBattle)
-	
+
+    self.onJoinedBattle = function(listener, battleID)
+        self:JoinedBattle(battleID)
+    end
+    lobby:AddListener("OnJoinedBattle", self.onJoinedBattle)
+
+    self.onLeftBattle = function(listener, battleID)
+        self:LeftBattle(battleID)
+    end
+    lobby:AddListener("OnLeftBattle", self.onLeftBattle)
+
     update()
 end
 
 function BattleListWindow:RemoveListeners()
-	lobby:RemoveListener("OnBattleOpened", self.onBattleOpened)
-	lobby:RemoveListener("OnBattleClosed", self.onBattleClosed)
-	lobby:RemoveListener("OnJoinedBattle", self.onJoinedBattle)
-	lobby:RemoveListener("OnLeftBattle", self.onLeftBattle)
+    lobby:RemoveListener("OnBattleOpened", self.onBattleOpened)
+    lobby:RemoveListener("OnBattleClosed", self.onBattleClosed)
+    lobby:RemoveListener("OnJoinedBattle", self.onJoinedBattle)
+    lobby:RemoveListener("OnLeftBattle", self.onLeftBattle)
 end
 
 function BattleListWindow:Update()
@@ -147,13 +147,13 @@ function BattleListWindow:Update()
 end
 
 function BattleListWindow:GetElementCount()
-	return #self.battlePanel.children
+    return #self.battlePanel.children
 end
 
 function BattleListWindow:AddBattle(battle)	
-	local index = self:GetElementCount() + 1
+    local index = self:GetElementCount() + 1
     local children = {}
-	
+
     local lblPlayers = Label:New {
         x = 5,
         width = 50,
@@ -203,7 +203,7 @@ function BattleListWindow:AddBattle(battle)
         tooltip = battle.map, 
     }
     table.insert(children, lblMap)
-    
+
     local btnJoin = Button:New {
         x = 675,
         width = 60,
@@ -218,83 +218,83 @@ function BattleListWindow:AddBattle(battle)
     }
     table.insert(children, btnJoin)
 
-	local panel = Control:New {
+    local panel = Control:New {
         x = 0,
         width = "100%",
         y = (index - 1) * 50,
         height = 40,
         children = children,
-		battleID = battle.battleID,
-		index = index,
+        battleID = battle.battleID,
+        index = index,
     }
     self.battlePanel:AddChild(panel)
-	self.battlePanelMapping[battle.battleID] = panel
-	self.orderPanelMapping[index] = panel
+    self.battlePanelMapping[battle.battleID] = panel
+    self.orderPanelMapping[index] = panel
 end
 
 function BattleListWindow:RemoveBattle(battleID)
-	local panel = self.battlePanelMapping[battleID]
-	local index = panel.index
-	
-	-- move elements up
-	while index < self:GetElementCount() - 1 do
-		local pnl = self.orderPanelMapping[index + 1]
-		pnl = (index - 1) * 50
-		pnl = index
-		self.orderPanelMapping[index] = pnl
-		index = index + 1
-		pnl:Invalidate()
-	end
-	self.orderPanelMapping[index] = nil
-	
-	self.battlePanel:RemoveChild(panel)
-	self.battlePanelMapping[battleID] = nil
+    local panel = self.battlePanelMapping[battleID]
+    local index = panel.index
+
+    -- move elements up
+    while index < self:GetElementCount() - 1 do
+        local pnl = self.orderPanelMapping[index + 1]
+        pnl = (index - 1) * 50
+        pnl = index
+        self.orderPanelMapping[index] = pnl
+        index = index + 1
+        pnl:Invalidate()
+    end
+    self.orderPanelMapping[index] = nil
+    
+    self.battlePanel:RemoveChild(panel)
+    self.battlePanelMapping[battleID] = nil
 end
 
 function BattleListWindow:SwapPlaces(panel1, panel2)
-	tmp = panel1.index
+    tmp = panel1.index
 
-	panel1.index = panel2.index
-	panel1.y = (panel1.index - 1) * 50
-	panel1:Invalidate()
-		
-	panel2.index = tmp
-	panel2.y = (panel2.index - 1) * 50
-	panel2:Invalidate()
+    panel1.index = panel2.index
+    panel1.y = (panel1.index - 1) * 50
+    panel1:Invalidate()
+
+    panel2.index = tmp
+    panel2.y = (panel2.index - 1) * 50
+    panel2:Invalidate()
 end
 
 function BattleListWindow:JoinedBattle(battleID)
-	local panel = self.battlePanelMapping[battleID]
-	local battle = lobby:GetBattle(battleID)
-	panel.children[1]:SetCaption(#battle.users .. "/" .. battle.maxPlayers)
-	
-	-- move panel up if needed
-	while panel.index > 1 do
-		local pnl = self.orderPanelMapping[panel.index - 1]
-		local btl = lobby:GetBattle(pnl.battleID)
-		if #battle.users > #btl.users then
-			self:SwapPlaces(panel, pnl)
-		else
-			return
-		end
-	end
+    local panel = self.battlePanelMapping[battleID]
+    local battle = lobby:GetBattle(battleID)
+    panel.children[1]:SetCaption(#battle.users .. "/" .. battle.maxPlayers)
+
+    -- move panel up if needed
+    while panel.index > 1 do
+        local pnl = self.orderPanelMapping[panel.index - 1]
+        local btl = lobby:GetBattle(pnl.battleID)
+        if #battle.users > #btl.users then
+            self:SwapPlaces(panel, pnl)
+        else
+            return
+        end
+    end
 end
 
 function BattleListWindow:LeftBattle(battleID)
-	local panel = self.battlePanelMapping[battleID]
-	local battle = lobby:GetBattle(battleID)
-	panel.children[1]:SetCaption(#battle.users .. "/" .. battle.maxPlayers)
-	
-	-- move panel down if needed
-	while panel.index < self:GetElementCount() - 1 do
-		local pnl = self.orderPanelMapping[panel.index + 1]
-		local btl = lobby:GetBattle(pnl.battleID)
-		if #battle.users < #btl.users then
-			self:SwapPlaces(panel, pnl)
-		else
-			return
-		end
-	end
+    local panel = self.battlePanelMapping[battleID]
+    local battle = lobby:GetBattle(battleID)
+    panel.children[1]:SetCaption(#battle.users .. "/" .. battle.maxPlayers)
+
+    -- move panel down if needed
+    while panel.index < self:GetElementCount() - 1 do
+        local pnl = self.orderPanelMapping[panel.index + 1]
+        local btl = lobby:GetBattle(pnl.battleID)
+        if #battle.users < #btl.users then
+            self:SwapPlaces(panel, pnl)
+        else
+            return
+        end
+    end
 end
 
 function BattleListWindow:JoinBattle(battle)

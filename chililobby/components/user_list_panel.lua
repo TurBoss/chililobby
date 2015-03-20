@@ -27,14 +27,14 @@ function UserListPanel:init(source)
         children = {
             self.userPanel,
         },
-		OnDispose = { 
-			function()
+        OnDispose = { 
+            function()
                 self:RemoveListeners()
-			end
-		},
+            end
+        },
     }
     self:AddListeners()
-	
+    
     self:Update()
 end
 
@@ -133,7 +133,7 @@ function UserListPanel:AddUser(userName)
         },
     }
     table.insert(children, btnChat)
-    
+
     self.userPanel:AddChild(Control:New {
         x = 0,
         width = "100%",

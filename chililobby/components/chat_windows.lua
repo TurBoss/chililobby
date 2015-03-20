@@ -2,7 +2,7 @@ ChatWindows = LCS.class{}
 
 function ChatWindows:init()
     -- setup debug console to listen to commands
-    
+
     self.debugConsole = Console()
     table.insert(self.debugConsole.ebInputText.OnKeyPress,
         function(obj, key, ...)
@@ -71,8 +71,8 @@ function ChatWindows:init()
             local channelConsole = self:GetChannelConsole(chanName)
         end
     )
-	
-	-- channel chat
+
+    -- channel chat
     lobby:AddListener("OnSaid", 
         function(listener, chanName, userName, message)
             local channelConsole = self.channelConsoles[chanName]
@@ -88,14 +88,14 @@ function ChatWindows:init()
                 channelConsole:AddMessage(message, userName, nil, "\255\0\139\139")
             end
         end
-    )	
-	
-	-- private chat
-	self.privateChatConsoles = {}	
+    )
+
+    -- private chat
+    self.privateChatConsoles = {}
     lobby:AddListener("OnSayPrivate",
         function(listener, userName, message)
-			local privateChatConsole = self:GetPrivateChatConsole(userName)
-			privateChatConsole:AddMessage(message, lobby:GetMyUserName())
+            local privateChatConsole = self:GetPrivateChatConsole(userName)
+            privateChatConsole:AddMessage(message, lobby:GetMyUserName())
         end
     )
     lobby:AddListener("OnSaidPrivate",
@@ -144,14 +144,14 @@ function ChatWindows:init()
         padding = {5, 0, 5, 0},
         children = {
             self.tabPanel,
-			Button:New {
-				caption = "-",
-				width = 50,
-				y = 10,
-				right = 2,
-				height = 40,
-				OnClick = { function() self:Minimize() end },
-			},
+            Button:New {
+                caption = "-",
+                width = 50,
+                y = 10,
+                right = 2,
+                height = 40,
+                OnClick = { function() self:Minimize() end },
+            },
         }
     }
 
@@ -160,41 +160,41 @@ function ChatWindows:init()
 end
 
 function ChatWindows:Minimize()
-	self.window:Hide()
-	if not self.minimizeWindow then
-		self.minimizedWindow = Window:New {
-			right = 0,
-			width = 120,
-			bottom = 0,
-			height = 60,
-			parent = screen0,
-			caption = "",
-			resizable = false,
-			draggable = false,
-			borderThickness = 0,
-			children = { 
-				Button:New {
-					caption = "Chat",
-					x = 2,
-					right = 2,
-					height = 40,
-					OnClick = { function() self:Maximize() end },
-				},
-			},
-		}
-	else
-		self.minimizedWindow:Show()
-	end
-	
+    self.window:Hide()
+    if not self.minimizeWindow then
+        self.minimizedWindow = Window:New {
+            right = 0,
+            width = 120,
+            bottom = 0,
+            height = 60,
+            parent = screen0,
+            caption = "",
+            resizable = false,
+            draggable = false,
+            borderThickness = 0,
+            children = { 
+                Button:New {
+                    caption = "Chat",
+                    x = 2,
+                    right = 2,
+                    height = 40,
+                    OnClick = { function() self:Maximize() end },
+                },
+            },
+        }
+    else
+        self.minimizedWindow:Show()
+    end
+
     self.window:Invalidate()
     self.window:AlignControl()
 end
 
 function ChatWindows:Maximize()
-	self.window:Show()
-	if self.minimizedWindow then
-		self.minimizedWindow:Hide()
-	end
+    self.window:Show()
+    if self.minimizedWindow then
+        self.minimizedWindow:Hide()
+    end
 end
 
 function ChatWindows:UpdateChannels(channelsArray)
@@ -268,9 +268,9 @@ end
 function ChatWindows:GetChannelConsole(chanName)
     local channelConsole = self.channelConsoles[chanName]
 
-	if channelConsole == nil then
+    if channelConsole == nil then
         channelConsole = Console()
-		self.channelConsoles[chanName] = channelConsole
+        self.channelConsoles[chanName] = channelConsole
 
         channelConsole.listener = function(message)
             lobby:Say(chanName, message)
@@ -279,8 +279,7 @@ function ChatWindows:GetChannelConsole(chanName)
         local userListPanel = UserListPanel(chanName)
         self.userListPanels[chanName] = userListPanel
 
-        self.tabPanel:AddTab(
-        {
+        self.tabPanel:AddTab({
             name = "#" .. chanName, 
             children = {
                 Control:New {
@@ -294,8 +293,7 @@ function ChatWindows:GetChannelConsole(chanName)
                     children = { userListPanel.panel, },
                 },
             }
-        }
-        )
+        })
 
         lobby:AddListener("OnClients", 
         function(listener, clientsChanName, clients)
@@ -304,24 +302,24 @@ function ChatWindows:GetChannelConsole(chanName)
             end
         end
         )
-	end
-	
-	return channelConsole
+    end
+
+    return channelConsole
 end
 
 function ChatWindows:GetPrivateChatConsole(userName)
-	local privateChatConsole = self.privateChatConsoles[userName]
+    local privateChatConsole = self.privateChatConsoles[userName]
 
-	if privateChatConsole == nil then
-		privateChatConsole = Console()
-		self.privateChatConsoles[userName] = privateChatConsole
+    if privateChatConsole == nil then
+        privateChatConsole = Console()
+        self.privateChatConsoles[userName] = privateChatConsole
 
-		privateChatConsole.listener = function(message)
-			lobby:SayPrivate(userName, message)
-		end
+        privateChatConsole.listener = function(message)
+            lobby:SayPrivate(userName, message)
+        end
 
-		self.tabPanel:AddTab({name = "@" .. userName, children = {privateChatConsole.panel}})
-	end
-	
-	return privateChatConsole
+        self.tabPanel:AddTab({name = "@" .. userName, children = {privateChatConsole.panel}})
+    end
+
+    return privateChatConsole
 end
