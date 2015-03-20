@@ -32,6 +32,7 @@ function BattleListWindow:init(parent)
         y = 50,
         bottom = 5,
 		borderColor = {0,0,0,0},
+        horizontalScrollbar = false,
     }
 	
     self.window = Window:New {
@@ -50,7 +51,7 @@ function BattleListWindow:init(parent)
         },
 		OnDispose = { 
 			function()
-				self:RemoveListener()
+				self:RemoveListeners()
 			end
 		},
     }

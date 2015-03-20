@@ -1,7 +1,6 @@
 local includes = {
     "headers/exports.lua",
-	"headers/links.lua",
-	"components/component.lua",
+     "components/component.lua",
     "components/console.lua",
     "components/status_bar.lua",
     "components/login_window.lua",
@@ -9,14 +8,14 @@ local includes = {
     "components/chat_windows.lua",
     "components/play_window.lua",
     "components/background.lua",
-	"components/configuration.lua",
+     "components/configuration.lua",
     "components/battle_list_window.lua",    
-	"components/battle_room_window.lua",
+     "components/battle_room_window.lua",
     "components/user_list_panel.lua",
-	
-	"components/queue/queue_list_window.lua",
-	"components/queue/queue_window.lua",
-	"components/queue/ready_check_window.lua",
+
+     "components/queue/queue_list_window.lua",
+     "components/queue/queue_window.lua",
+     "components/queue/ready_check_window.lua",
 }
 
 local ChiliLobby = widget
@@ -26,18 +25,16 @@ for _, file in ipairs(includes) do
 end
 
 function ChiliLobby:initialize()
-	self:WrapCall(function()	
-		local loginWindow = LoginWindow()
-		--self.downloader = Downloader()
-	    local statusBar = StatusBar()
-		self.background = Background()
+    local loginWindow = LoginWindow()
+    self.downloader = Downloader()
+    local statusBar = StatusBar()
+    self.background = Background()
 
-		lobby:AddListener("OnJoinBattle", 
-			function(listener, battleID)
-				local battleRoom = BattleRoomWindow(battleID)
-			end
-		)
-	end)
+    lobby:AddListener("OnJoinBattle", 
+        function(listener, battleID)
+            local battleRoom = BattleRoomWindow(battleID)
+        end
+    )
 end
 
 function ChiliLobby:DrawScreen()

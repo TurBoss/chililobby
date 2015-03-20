@@ -29,6 +29,7 @@ function QueueListWindow:init(parent)
         y = 50,
         bottom = 10,
 		borderColor = {0,0,0,0},
+        horizontalScrollbar = false,
     }
 	
     self.window = Window:New {
