@@ -103,7 +103,6 @@ function BattleRoomWindow:init(battleID)
         }
     }
 
-
     local onSaidBattle = function(listener, userName, message)
         self.battleRoomConsole:AddMessage(userName .. ": " .. message)
     end
