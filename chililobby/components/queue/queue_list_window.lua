@@ -82,33 +82,74 @@ function QueueListWindow:AddQueue(queue)
     local h = 60
     local padding = 20
     local children = {}
+    
+    local img = "spring.png"
+    local detected = false
+    for _, game in pairs(queue.gameNames) do
+        local notDetected = false
+        if game:match("EvolutionRTS") then
+            img = "evorts.png"
+        elseif game:match("Cursed") then
+            img = "cursed.png"
+        elseif game:match("Balanced Annihilation") then
+            img = "balogo.bmp"
+        else
+            notDetected = true
+        end
+        -- multiple games
+        if not notDetected and detected then
+            img = "spring.png"
+            break
+        else
+            detected = true
+        end
+    end
+    local gameNamesStr = ""
+    for i = 1, #queue.gameNames do 
+        local game = queue.gameNames[i]
+        gameNamesStr = gameNamesStr .. game
+        if i ~= #queue.gameNames then
+            gameNamesStr = gameNamesStr .. ", "
+        end
+    end
+    local imgGame = Image:New {
+        x = 0,
+        width = h - 10,
+        y = 5,
+        height = h - 10,
+        file = CHILI_LOBBY_IMG_DIR .. "games/" .. img,
+    }
+    
     local lblTitle = Label:New {
-        x = 5,
-        width = 120,
+        x = h + 10,
+        width = 150,
         y = 0,
         height = h,
-        caption = queue.title:sub(1, 22),
-        tooltip = queue.title, 
+        caption = queue.title:sub(1, 15),
         font = { size = 18 },
         valign = 'center',
+        tooltip = gameNamesStr, -- TODO: special (?) button for the tooltip
     }
-    table.insert(children, lblTitle)
-
-    local lblDescription = Label:New {
-        x = 130,
-        width = 200,
-        y = 5,
-        height = h,
-        caption = queue.description:sub(1, 22) ,
-        tooltip = queue.description, 
-        valign = 'center'
-    }
-    table.insert(children, lblDescription)
-
+--     if #queue.title > 15 then
+--         lblTitle.tooltip = queue.title
+--     end
+    local missingMaps = {}
+    local missingGames = {}
+    for _, map in pairs(queue.mapNames) do
+        if not VFS.HasArchive(map) then
+            table.insert(missingMaps, map)
+        end
+    end
+    for _, game in pairs(queue.gameNames) do
+        if not VFS.HasArchive(game) then
+            table.insert(missingGames, game)
+        end
+    end
+    
     local btnJoin
     btnJoin = Button:New {
-        right = 5,
-        width = 100,
+        x = lblTitle.x + lblTitle.width + 20,
+        width = 120,
         y = 0,
         height = h,
         caption = "Join",
@@ -123,7 +164,61 @@ function QueueListWindow:AddQueue(queue)
             end
         },
     }
-    table.insert(children, btnJoin)
+    local btnDownload
+    btnDownload = Button:New {
+        x = lblTitle.x + lblTitle.width + 20,
+        width = 120,
+        y = 0,
+        height = h,
+        caption = "Download",
+        font = { size = 18 },
+        OnMouseUp = {
+            function()
+                if btnDownload.state.pressed then
+                    return
+                end
+                btnDownload.state.pressed = true
+                for _, game in pairs(missingGames) do
+                    Spring.Log("chililobby", "notice", "Downloading game " .. game)
+                    VFS.DownloadArchive(game, "game")
+                end
+                for _, map in pairs(missingMaps) do
+                    Spring.Log("chililobby", "notice", "Downloading map " .. map)
+                    VFS.DownloadArchive(map, "map")
+                end
+                -- download game
+            end
+        },
+    }
+    local btnQueue = btnDownload
+
+    if #missingMaps + #missingGames == 0 then
+        btnQueue = btnJoin
+    else
+        Spring.Echo("[" .. queue.title .. "] " .. "Missing " .. tostring(#missingGames) .. " games and " .. tostring(#missingMaps) .. " maps.")
+    end
+    local ctrlLeft = Control:New {
+        width = btnJoin.x + btnJoin.width,
+        y = 0,
+        height = h,
+        padding = {0, 0, 0, 0},
+        children = {
+            lblTitle,
+            imgGame,
+            btnQueue,
+        },
+    }
+    table.insert(children, LayoutPanel:New {
+        x = 0,
+        right = 0,
+        height = h,
+        padding = {0, 0, 0, 0},
+        itemMargin    = {0, 0, 0, 0},
+        itemPadding   = {0, 0, 0, 0},
+        children = {
+            ctrlLeft
+        },
+    })
 
     self.queuePanel:AddChild(Window:New {
         x = 0,
