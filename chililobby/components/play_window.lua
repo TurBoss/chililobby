@@ -22,7 +22,7 @@ function PlayWindow:init()
         width = 100,
         y = 0,
         height = 20,
-        caption = "Singleplayer",
+        caption = i18n("singleplayer"),
         font = {
             size = 20,
         },
@@ -34,8 +34,8 @@ function PlayWindow:init()
         y = 40,
         height = playButtonH,
         width = playButtonW,
-        caption = 'SKIRMISH',
-        tooltip = "Play a singleplayer game",		
+        caption = i18n("skirmish_caps"),
+        tooltip = i18n("play_singleplayer_game"),
         font = {
             size = 16,
             outlineWidth = 5,
@@ -60,7 +60,7 @@ function PlayWindow:init()
         width = 100,
         y = 160,
         height = 20,
-        caption = "Multiplayer",
+        caption = i18n("multiplayer"),
         font = {
             size = 20,
         },
@@ -71,8 +71,8 @@ function PlayWindow:init()
         y = 200,
         height = playButtonH,
         width = playButtonW,
-        caption = 'MATCHMAKING',
-        tooltip = "Play a normal multiplayer game",		
+        caption = i18n("matchmaking_caps"),
+        tooltip = i18n("play_normal_multiplayer_game"),
         font = {
             size = 16,
             outlineWidth = 5,
@@ -92,8 +92,8 @@ function PlayWindow:init()
         y = 280,
         height = playButtonH,
         width = playButtonW,
-        tooltip = "Play a custom multiplayer game", 
-        caption = 'CUSTOM',
+        caption = i18n("custom_caps"),
+        tooltip = i18n('play_custom_multiplayer_game'),
         font = {
             size = 16,
             outlineWidth = 5,

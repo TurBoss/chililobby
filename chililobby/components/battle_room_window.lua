@@ -10,7 +10,7 @@ function BattleRoomWindow:init(battleID)
         width = 200,
         height = 30,
         font = { size = 20 },
-        caption = "Battle: " .. tostring(battle.title),
+        caption = i18n("battle") .. ": " .. tostring(battle.title),
     }
 
     self.lblNumberOfPlayers = Label:New {
@@ -32,7 +32,7 @@ function BattleRoomWindow:init(battleID)
         y = 0,
         width = 60,
         height = 35,
-        caption = Configuration:GetErrorColor() .. "Quit\b",
+        caption = Configuration:GetErrorColor() .. i18n("quit") .. "\b",
         OnClick = {
             function()
                 lobby:LeaveBattle()
@@ -45,10 +45,10 @@ function BattleRoomWindow:init(battleID)
         y = 45,
         width = 60,
         height = 35,
-        caption = "Don't have game [" .. Configuration:GetErrorColor() .. "✘\b]",
+        caption = i18n("dont_have_game") .. " [" .. Configuration:GetErrorColor() .. "✘\b]",
     }
     if VFS.HasArchive(battle.gameName) then
-        self.lblHaveGame.caption = "Have game [" .. Configuration:GetSuccessColor() .. "✔\b]"
+        self.lblHaveGame.caption = i18n("have_game") .. " [" .. Configuration:GetSuccessColor() .. "✔\b]"
     end
 
     self.lblHaveMap = Label:New {
@@ -56,10 +56,10 @@ function BattleRoomWindow:init(battleID)
         y = 85,
         width = 60,
         height = 35,
-        caption = "Don't have map [" .. Configuration:GetErrorColor() .. "✘\b]",
+        caption = i18n("dont_have_map") .. " [" .. Configuration:GetErrorColor() .. "✘\b]",
     }
     if VFS.HasArchive(battle.map) then
-        self.lblHaveMap.caption = "Have map [" .. Configuration:GetSuccessColor() .. "✔\b]"
+        self.lblHaveMap.caption = i18n("have_map") .. " [" .. Configuration:GetSuccessColor() .. "✔\b]"
     end
 
     self.btnStartBattle = Button:New {
@@ -67,7 +67,7 @@ function BattleRoomWindow:init(battleID)
         y = 80,
         width = 110,
         height = 55,
-        caption = "\255\66\138\201Start\b",
+        caption = "\255\66\138\201" .. i18n("start") ..  "\b",
         font = { size = 22 },
         OnClick = {
             function()
@@ -198,7 +198,7 @@ end
 
 function BattleRoomWindow:UpdatePlayers()
     local battle = lobby:GetBattle(self.battleID)
-    self.lblNumberOfPlayers:SetCaption("Players: " .. tostring(#battle.users) .. "/" .. tostring(battle.maxPlayers))
+    self.lblNumberOfPlayers:SetCaption(i18n("players") .. ": " .. tostring(#battle.users) .. "/" .. tostring(battle.maxPlayers))
 end
 
 function BattleRoomWindow:GenerateScriptTxt()

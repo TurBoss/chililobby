@@ -1,7 +1,7 @@
 BattleListWindow = ListWindow:extends{}
 
 function BattleListWindow:init(parent)
-    self:super("init", parent, "Custom games")
+    self:super("init", parent, i18n("custom_games"))
  
     local update = function() self:Update() end
 
@@ -120,7 +120,7 @@ function BattleListWindow:AddBattle(battle)
         width = 100,
         y = 5,
         height = h - 10,
-        caption = "Join",
+        caption = i18n("join"),
         OnClick = {
             function()
                 self:JoinBattle(battle)
@@ -163,7 +163,7 @@ function BattleListWindow:JoinBattle(battle)
             width = 100,
             y = 20,
             height = 20,
-            caption = "Password: ",
+            caption = i18n("password") .. ": ",
         }
         local ebPassword = EditBox:New {
             x = 110,
@@ -171,7 +171,7 @@ function BattleListWindow:JoinBattle(battle)
             y = 20,
             height = 20,
             text = "",
-            hint = "Password",
+            hint = i18n("password"),
             passwordInput = true,
             OnKeyPress = {
                 function(obj, key, mods, ...)
@@ -187,7 +187,7 @@ function BattleListWindow:JoinBattle(battle)
             bottom = 1,
             width = 80,
             height = 40,
-            caption = "Join",
+            caption = i18n("Join"),
             OnClick = {
                 function()
                     tryJoin()
@@ -199,7 +199,7 @@ function BattleListWindow:JoinBattle(battle)
             bottom = 1,
             width = 80,
             height = 40,
-            caption = "Close",
+            caption = i18n("close"),
             OnClick = {
                 function()
                     passwordWindow:Dispose()

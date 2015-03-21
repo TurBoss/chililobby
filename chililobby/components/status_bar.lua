@@ -16,8 +16,8 @@ function StatusBar:init()
     }
 
     -- configuration
-    self.showConnectionStatus = false
-    self.showServerStatus = false
+    self.showConnectionStatus = true
+    self.showServerStatus = true
     self.showPlayerWelcome = true
 
     -- aligning
@@ -41,7 +41,7 @@ function StatusBar:AddConnectionStatus()
         x = 10,
         y = 12,
         height = 20,
-        caption = "\255\180\180\180Offline\b",
+        caption = "\255\180\180\180" .. i18n("offline") .. "\b",
         font = {
             size = 20,
         },
@@ -97,7 +97,7 @@ function StatusBar:AddServerStatus()
         elseif userCount >= 10000 then
             userCount = math.floor((userCount / 1000)) .. "k"
         end
-        self.lblUsersOnline:SetCaption("Users: " .. userCount)
+        self.lblUsersOnline:SetCaption(i18n("users") .. ": " .. userCount)
     end
     --updateUserCount()
     lobby:AddListener("OnAddUser", updateUserCount)
@@ -123,7 +123,7 @@ function StatusBar:AddServerStatus()
         elseif battleCount >= 10000 then
             battleCount = math.floor((battleCount / 1000)) .. "k"
         end
-        self.lblBattlesOpen:SetCaption("Battles: " .. battleCount)
+        self.lblBattlesOpen:SetCaption(i18n("battles") .. ": " .. battleCount)
     end
     lobby:AddListener("OnAccepted", 
         function(listener)
@@ -154,7 +154,7 @@ function StatusBar:AddServerStatus()
         elseif queueCount >= 10000 then
             queueCount = math.floor((queueCount / 1000)) .. "k"
         end
-        self.lblQueuesOpen:SetCaption("Queues: " .. queueCount)
+        self.lblQueuesOpen:SetCaption(i18n("queues") .. ": " .. queueCount)
     end
     lobby:AddListener("OnAccepted", 
         function(listener)
@@ -250,7 +250,7 @@ function StatusBar:AddPlayerWelcome()
 
     lobby:AddListener("OnAccepted", 
         function(listener)
-            self.lblPlayerIcon:SetCaption("Welcome " .. lobby:GetMyUserName())
+            self.lblPlayerIcon:SetCaption(i18n("welcome") .. " " ..  lobby:GetMyUserName())
             --self.lblPlayerIcon:SetCaption("Welcome 12345123451234512345!")
         end
     )
@@ -261,16 +261,16 @@ end
 function StatusBar:AddMenuIcon()
     self.btnSettings = Button:New {
         width = 100, height = 40,
-        caption = "Settings",
+        caption = i18n("settings"),
     }
     self.btnLogout = Button:New {
         width = 100, height = 40,
-        caption = "\255\150\150\150Logout\b",
+        caption = "\255\150\150\150" .. i18n("logout") .. "\b",
         state = { enabled = false },
     }
     self.btnQuit = Button:New {
         width = 100, height = 40,
-        caption = "Quit",
+        caption = i18n("quit"),
     }
     self.btnMenu = ComboBox:New {
         right = 5,
@@ -387,7 +387,7 @@ function StatusBar:DownloadStarted(...)
 end
 
 function StatusBar:DownloadQueued(...)
-    Spring.Echo("Download finished")
+    Spring.Echo("Download queued")
     self.downloads = self.downloads + 1
     self:UpdateDownloadStatus()
 end

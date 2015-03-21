@@ -174,7 +174,7 @@ function ChatWindows:Minimize()
             borderThickness = 0,
             children = { 
                 Button:New {
-                    caption = "Chat",
+                    caption = i18n("chat"),
                     x = 2,
                     right = 2,
                     height = 40,
@@ -215,7 +215,7 @@ function ChatWindows:UpdateChannels(channelsArray)
             width = 100,
             y = 0,
             height = 20,
-            caption = "Channel",
+            caption = i18n("channel"),
         }
     )
     self.serverPanel:AddChild(
@@ -224,7 +224,7 @@ function ChatWindows:UpdateChannels(channelsArray)
             width = 100,
             y = 0,
             height = 20,
-            caption = "Topic",
+            caption = i18n("topic") ,
         }
     )
     for i, channel in pairs(channelsArray) do
@@ -253,7 +253,7 @@ function ChatWindows:UpdateChannels(channelsArray)
                     width = 60,
                     y = 0,
                     height = 30,
-                    caption = "Join",
+                    caption = i18n("join"),
                     OnClick = {
                         function()
                             lobby:Join(channel.chanName)

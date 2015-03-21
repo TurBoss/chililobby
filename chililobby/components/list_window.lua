@@ -1,4 +1,4 @@
-ListWindow = LCS.class{}
+ListWindow = Component:extends{}
 
 function ListWindow:init(parent, title)
     self.lblTitle = Label:New {
@@ -15,7 +15,7 @@ function ListWindow:init(parent, title)
         y = 0,
         width = 60,
         height = 35,
-        caption = Configuration:GetErrorColor() .. "Close\b",
+        caption = Configuration:GetErrorColor() .. i18n("close") .. "\b",
         OnClick = {
             function()
                 self.window:Hide() --Dispose()

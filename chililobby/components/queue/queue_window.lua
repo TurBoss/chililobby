@@ -9,7 +9,7 @@ function QueueWindow:init(queue)
         y = 25,
         width = 100,
         height = 100,
-        caption = "Time in queue: ",
+        caption = i18n("time_in_queue"),
         font = { size = 18 },
         Update =
         function(...)
@@ -18,7 +18,7 @@ function QueueWindow:init(queue)
             if currentTime ~= lastUpdate then
                 lastUpdate = curentTime
                 local diff = math.floor(currentTime - joinedQueueTime)
-                self.lblStatus:SetCaption("Time in queue: " .. tostring(diff) .. "s")
+                self.lblStatus:SetCaption(i18n("time_in_queue") .. ": " .. tostring(diff) .. "s")
             end
             self.lblStatus:RequestUpdate()
         end,
@@ -36,7 +36,7 @@ function QueueWindow:init(queue)
         children = {
             self.lblStatus,
             Button:New {
-                caption = Configuration:GetErrorColor() .. "Leave\b",
+                caption = Configuration:GetErrorColor() .. i18n("leave") .. "\b",
                 bottom = 10,
                 right = 5,
                 width = 70,

@@ -32,7 +32,7 @@ function Console:init()
         height = 40,
         right = 0,
         width = 90,
-        caption = "Submit",
+        caption = i18n("submit"),
         OnClick = { 
             function(...)
                 self:SendMessage()

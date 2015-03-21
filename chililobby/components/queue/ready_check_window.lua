@@ -18,7 +18,7 @@ function ReadyCheckWindow:init(queue, responseTime, queueWindow)
         y = 60,
         width = 100,
         height = 100,
-        caption = "Time to respond: ",
+        caption = i18n("time_to_respond") .. ": ",
         font = { size = 18 },
         Update = function(...)
             Label.Update(self.lblReadyCheck, ...)
@@ -27,12 +27,12 @@ function ReadyCheckWindow:init(queue, responseTime, queueWindow)
                 if self.readyCheckTime <= self.currentTime then
                     self:SendResponse("timeout")
                     self.lblReadyCheck.x = 60
-                    self.lblReadyCheck:SetCaption("Timeout, leaving queue...")
+                    self.lblReadyCheck:SetCaption(i18n("timeout_leaving_queue") .. "...")
                     WG.Delay(function() self.window:Dispose() end, 3)
                     return
                 else
                     local diff = math.floor(self.readyCheckTime - self.currentTime)
-                    self.lblReadyCheck:SetCaption("Are you ready? (" .. tostring(diff) .. "s)")
+                    self.lblReadyCheck:SetCaption(i18n("are_you_ready") .. "(" .. tostring(diff) .. i18n("seconds_short") .. ")")
                 end
             end
             self.lblReadyCheck:RequestUpdate()
@@ -40,7 +40,7 @@ function ReadyCheckWindow:init(queue, responseTime, queueWindow)
     }
 
     self.btnYes = Button:New {
-        caption = "YES",
+        caption = i18n("yes_caps"),
         x = 10,
         y = 125,
         width = 100,
@@ -51,12 +51,12 @@ function ReadyCheckWindow:init(queue, responseTime, queueWindow)
             end
             self:SendResponse("ready")
             self.lblReadyCheck.x = 60
-            self.lblReadyCheck:SetCaption("Waiting for other players...")
+            self.lblReadyCheck:SetCaption(i18n("waiting_for_other_players") .. "...")
         end },
     }
 
     self.btnNo = Button:New {
-        caption = "NO",
+        caption = i18n("no_caps"),
         right = 10,
         y = 125,
         width = 100,
@@ -67,7 +67,7 @@ function ReadyCheckWindow:init(queue, responseTime, queueWindow)
             end
             self:SendResponse("notready")
             self.lblReadyCheck.x = 60
-            self.lblReadyCheck:SetCaption("Not ready, leaving queue...")
+            self.lblReadyCheck:SetCaption(i18n("not_ready_leaving_queue") .. "...")
             WG.Delay(function() self.window:Dispose() end, 2)
         end },
     }
@@ -101,7 +101,7 @@ function ReadyCheckWindow:init(queue, responseTime, queueWindow)
     self.onReadyCheckResult = function(listener, queueId, result)
         if result == "pass" then
             self.lblReadyCheck.x = 60
-            self.lblReadyCheck:SetCaption("Game starting soon...")
+            self.lblReadyCheck:SetCaption(i18n("game_starting_soon") .. "...")
 
             self.onConnectUser = function(listener, ip, port, engine)
                 WG.Delay(function()
@@ -114,7 +114,7 @@ function ReadyCheckWindow:init(queue, responseTime, queueWindow)
             lobby:AddListener("OnConnectUser", self.onConnectUser)
         else
             self.lblReadyCheck.x = 60
-            self.lblReadyCheck:SetCaption("Failed! Reentering queue...")
+            self.lblReadyCheck:SetCaption(i18n("failed_reconnecting_queue") .. "...")
             self.rejoinQueueOnDispose = true
             WG.Delay(function() self.window:Dispose() end, 1)
         end

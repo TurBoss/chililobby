@@ -1,7 +1,7 @@
 QueueListWindow = ListWindow:extends{}
 
 function QueueListWindow:init(parent)
-    self:super("init", parent, "Queues")
+    self:super("init", parent, i18n("queues"))
 
     self.onQueueOpened = function(listener, queue)
         self:AddQueue(queue)
@@ -105,7 +105,7 @@ function QueueListWindow:AddQueue(queue)
         width = 120,
         y = 5,
         height = h - 10,
-        caption = "Join",
+        caption = i18n("join"),
         font = { size = 18 },
         OnMouseUp = {
             function()
@@ -123,14 +123,10 @@ function QueueListWindow:AddQueue(queue)
         width = 120,
         y = 5,
         height = h - 10,
-        caption = "Download",
+        caption = i18n("download"),
         font = { size = 18 },
         OnMouseUp = {
             function()
-                if btnDownload.state.pressed then
-                    return
-                end
-                btnDownload.state.pressed = true
                 for _, game in pairs(missingGames) do
                     Spring.Log("chililobby", "notice", "Downloading game " .. game)
                     VFS.DownloadArchive(game, "game")
@@ -148,7 +144,7 @@ function QueueListWindow:AddQueue(queue)
     if #missingMaps + #missingGames == 0 then
         btnQueue = btnJoin
     else
-        Spring.Echo("[" .. queue.title .. "] " .. "Missing " .. tostring(#missingGames) .. " games and " .. tostring(#missingMaps) .. " maps.")
+--         Spring.Echo("[" .. queue.title .. "] " .. "Missing " .. tostring(#missingGames) .. " games and " .. tostring(#missingMaps) .. " maps.")
     end
 
     local items = {

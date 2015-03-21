@@ -30,9 +30,9 @@ end
 
 function ChiliLobby:initialize()
     local loginWindow = LoginWindow()
-    self.downloader = Downloader()
+    --self.downloader = Downloader()
     local statusBar = StatusBar()
-    self.background = Background()
+    local background = Background()
 
     lobby:AddListener("OnJoinBattle", 
         function(listener, battleID)
