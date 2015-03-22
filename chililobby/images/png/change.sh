@@ -5,7 +5,8 @@
 color="#7a91e6"
 #colorOff="#3f5185"
 #colorOff="#354470"
-colorOff="#152450"
+#colorOff="#152450"
+colorOff="#313a5c"
 
 mkdir -p output
 for i in original_*.png; do 
