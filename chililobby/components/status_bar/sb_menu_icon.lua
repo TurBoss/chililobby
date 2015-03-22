@@ -51,6 +51,70 @@ function SBMenuIcon:init()
             if selected then
                 if itemIdx == 1 then
                     Spring.Echo("Settings")
+                    local sw, sh = Spring.GetWindowGeometry()
+                    local w, h = 400, 200
+                    local window
+                    window = Window:New {
+                        caption = i18n("settings"),
+                        x = math.floor((sw - w) / 2),
+                        y = math.floor(math.max(0, (sh) / 2 - h)),
+                        width = w,
+                        height = h,
+                        parent = screen0,
+                        draggable = false,
+                        resizable = false,
+                        children = {
+                            Label:New {
+                                x = 10,
+                                width = 100,
+                                height = 40,
+                                y = 40,
+                                valign = "center",
+                                caption = i18n("language") .. ":",
+                            },
+                            ComboBox:New {
+                                x = 110,
+                                width = 150,
+                                height = 40,
+                                y = 40,
+                                items = { "English", "Japanese", "Serbian" },
+                                OnSelect = {function(obj, indx, changed) 
+                                    if changed then
+                                        local locales = { "en", "jp", "sr" }
+                                        i18n.setLocale(locales[indx])
+                                    end
+                                end},
+                            },
+                            Checkbox:New { 
+                                x = 10,
+                                width = 300,
+                                y = 100,
+                                caption = i18n("Enable GLSL animations (experimental)"),
+                                checked = ChiliFX:IsEnabled(),
+                                OnChange = {function(obj, val) 
+                                    if val then
+                                        ChiliFX:Enable()
+                                        Chotify:Post({
+                                            title = "GLSL is ON!",
+                                            body = "wohoooooo!!",
+                                        })
+                                    else
+                                        ChiliFX:Disable()
+                                    end
+                                end},
+                            },
+                            Button:New {
+                                right = 10,
+                                width = 70,
+                                y = 130,
+                                height = 40,
+                                caption = i18n("close"),
+                                OnClick = { function()
+                                    window:Dispose()
+                                end}
+                            },
+                        }
+                    }
                 elseif itemIdx == 3 then
                     Spring.Echo("Logout")
                 elseif itemIdx == 4 then

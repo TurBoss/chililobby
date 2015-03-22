@@ -56,6 +56,7 @@ return {
         downloads_completed = "All downloads completed.",
         server = "Server",
         debug = "Debug",
+        language = "Language",
 	},
 	sr = {
 		connect_to_spring_server = 'Prijavljivanje na Spring lobi server',

@@ -54,8 +54,6 @@ function SBDownloadsIcon:UpdateDownloadStatus()
             endValue = 0.4, 
             after = function()
                 img.file = CHILI_LOBBY_IMG_DIR .. "download_off.png"
-                img.DrawControl = Image.DrawControl
-                img:Invalidate()
             end
         })
         self.btnDownloads.children[1]:SetCaption("")
@@ -69,26 +67,20 @@ function SBDownloadsIcon:UpdateDownloadStatus()
 end
 
 function SBDownloadsIcon:DownloadStarted(...)
-    Spring.Echo("Download started")
     self:UpdateDownloadStatus()
 end
 
 function SBDownloadsIcon:DownloadQueued(...)
-    Spring.Echo("Download queued")
     self.downloads = self.downloads + 1
     self:UpdateDownloadStatus()
 
     local img = self.btnDownloads.children[2]
+    img.file = CHILI_LOBBY_IMG_DIR .. "download.png"
     ChiliFX:AddGlowEffect({
         obj = img, 
         time = 1,
         endValue = 1,
         startValue = 2,
-        after = function()
-            img.file = CHILI_LOBBY_IMG_DIR .. "download.png"
-            img.DrawControl = Image.DrawControl
-            img:Invalidate()
-        end
     })
     Chotify:Post({
         title = "Download",
@@ -97,13 +89,11 @@ function SBDownloadsIcon:DownloadQueued(...)
 end
 
 function SBDownloadsIcon:DownloadFinished(...)
-    Spring.Echo("Download finished")
     self.downloads = self.downloads - 1
     self:UpdateDownloadStatus()
 end
 
 function SBDownloadsIcon:DownloadFailed(...)
-    Spring.Echo("Download failed")
     self.downloads = self.downloads - 1
     self:UpdateDownloadStatus()
 end
