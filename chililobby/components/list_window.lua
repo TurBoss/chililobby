@@ -18,7 +18,16 @@ function ListWindow:init(parent, title)
         caption = Configuration:GetErrorColor() .. i18n("close") .. "\b",
         OnClick = {
             function()
-                self.window:Hide() --Dispose()
+                ChiliFX:AddFadeEffect({
+                    obj = self.window, 
+                    fadeTime = 0.2,
+                    endValue = 0,
+                    startValue = 1,
+                    callback = function()
+                        self.window:Hide()
+                    end
+                })
+                --self.window:Hide() --Dispose()
             end
         },
     }

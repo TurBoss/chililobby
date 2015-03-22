@@ -26,7 +26,6 @@ end
 
 function Configuration:LoadConfig()
     if VFS.FileExists(self.configFile, VFS.RAW) then
-        Spring.Echo(fileExists)
         local config = json.decode(VFS.LoadFile(self.configFile))
         for k, v in pairs(config) do
             self[k] = v

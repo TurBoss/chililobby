@@ -335,25 +335,13 @@ function StatusBar:AddDownloadsIcon()
         children = {
             Label:New {
                 x = 3,
-                y = 28,
+                bottom = 0,
                 height = 10,
                 font = { 
                     size = 17, 
-                    outline = true,
                     autoOutlineColor = false,
-                    outlineColor = { 1, 0, 0, 0.6 },
-                },
-                caption = "",
-            },
-            Label:New {
-                x = 28,
-                y = 3,
-                height = 10,
-                font = { 
-                    size = 14, 
-                    outline = true,
-                    autoOutlineColor = false,
-                    outlineColor = { 0, 1, 0, 0.6 },
+                    shadow = false,
+                    outline = false,
                 },
                 caption = "",
             },
@@ -372,13 +360,24 @@ function StatusBar:AddDownloadsIcon()
 end
 
 function StatusBar:UpdateDownloadStatus()
+    local img = self.btnDownloads.children[2]
     if self.downloads > 0 then
-        self.btnDownloads.children[1]:SetCaption("\255\0\200\0" .. tostring(self.downloads) .. "\b")
-        self.btnDownloads.children[3].file = CHILI_LOBBY_IMG_DIR .. "download.png"
+       -- self.btnDownloads.children[1]:SetCaption("\255\120\120\120" .. tostring(self.downloads) .. "\b")
+        img.file = CHILI_LOBBY_IMG_DIR .. "download.png"
     else
+        ChiliFX:AddFadeEffect({
+            obj = img, 
+            fadeTime = 3, 
+            endValue = 0.4, 
+            callback = function()
+                img.file = CHILI_LOBBY_IMG_DIR .. "download_off.png"
+                img.DrawControl = Image.DrawControl
+                img:Invalidate()
+            end
+        })
         self.btnDownloads.children[1]:SetCaption("")
-        self.btnDownloads.children[3].file = CHILI_LOBBY_IMG_DIR .. "download_off.png"
     end
+    img:Invalidate()
 end
 
 function StatusBar:DownloadStarted(...)
@@ -390,6 +389,19 @@ function StatusBar:DownloadQueued(...)
     Spring.Echo("Download queued")
     self.downloads = self.downloads + 1
     self:UpdateDownloadStatus()
+
+    local img = self.btnDownloads.children[2]
+    ChiliFX:AddFadeEffect({
+        obj = img, 
+        fadeTime = 1,
+        endValue = 1,
+        startValue = 2,
+        callback = function()
+            img.file = CHILI_LOBBY_IMG_DIR .. "download.png"
+            img.DrawControl = Image.DrawControl
+            img:Invalidate()
+        end
+    })
 end
 
 function StatusBar:DownloadFinished(...)

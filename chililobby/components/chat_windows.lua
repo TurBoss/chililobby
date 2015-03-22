@@ -160,38 +160,54 @@ function ChatWindows:init()
 end
 
 function ChatWindows:Minimize()
-    self.window:Hide()
-    if not self.minimizeWindow then
-        self.minimizedWindow = Window:New {
-            right = 0,
-            width = 120,
-            bottom = 0,
-            height = 60,
-            parent = screen0,
-            caption = "",
-            resizable = false,
-            draggable = false,
-            borderThickness = 0,
-            children = { 
-                Button:New {
-                    caption = i18n("chat"),
-                    x = 2,
-                    right = 2,
-                    height = 40,
-                    OnClick = { function() self:Maximize() end },
-                },
-            },
-        }
-    else
-        self.minimizedWindow:Show()
-    end
+    ChiliFX:AddFadeEffect({
+        obj = self.window, 
+        fadeTime = 0.1,
+        endValue = 0,
+        startValue = 1,
+        callback = function()
+            self.window:Hide()
 
-    self.window:Invalidate()
-    self.window:AlignControl()
+            if not self.minimizeWindow then
+            self.minimizedWindow = Window:New {
+                right = 0,
+                width = 120,
+                bottom = 0,
+                height = 60,
+                parent = screen0,
+                caption = "",
+                resizable = false,
+                draggable = false,
+                borderThickness = 0,
+                children = { 
+                    Button:New {
+                        caption = i18n("chat"),
+                        x = 2,
+                        right = 2,
+                        height = 40,
+                        OnClick = { function() self:Maximize() end },
+                    },
+                },
+            }
+            else
+                self.minimizedWindow:Show()
+            end
+
+            self.window:Invalidate()
+            self.window:AlignControl()
+        end
+    })
 end
 
 function ChatWindows:Maximize()
     self.window:Show()
+    ChiliFX:AddFadeEffect({
+        obj = self.window, 
+        fadeTime = 0.1,
+        endValue = 1,
+        startValue = 0,
+    })
+
     if self.minimizedWindow then
         self.minimizedWindow:Hide()
     end
