@@ -364,6 +364,7 @@ function StatusBar:UpdateDownloadStatus()
     if self.downloads > 0 then
        -- self.btnDownloads.children[1]:SetCaption("\255\120\120\120" .. tostring(self.downloads) .. "\b")
         img.file = CHILI_LOBBY_IMG_DIR .. "download.png"
+        self.btnDownloads.tooltip = "Downloads left: " .. tostring(self.downloads) .. "\n"
     else
         ChiliFX:AddGlowEffect({
             obj = img, 
@@ -376,6 +377,7 @@ function StatusBar:UpdateDownloadStatus()
             end
         })
         self.btnDownloads.children[1]:SetCaption("")
+        self.btnDownloads.tooltip = ""
         Chotify:Post({
             title = "Download",
             body = i18n("downloads_completed"),
@@ -424,6 +426,9 @@ function StatusBar:DownloadFailed(...)
     self:UpdateDownloadStatus()
 end
 
+function StatusBar:DownloadProgress(id, done, size)
+    self.btnDownloads.tooltip = "Downloads left: " .. tostring(self.downloads) .. "\n" .. "Current item progress: " .. done .. "/" .. size
+end
 
 function StatusBar:AddErrorsIcon()
     self.btnErrors = Button:New {
