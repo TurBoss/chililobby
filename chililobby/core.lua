@@ -2,25 +2,33 @@ local includes = {
     -- order matters
     "headers/exports.lua",
     
+    -- config
     "components/configuration.lua",
 
+    -- basic components
     "components/component.lua",
     "components/list_window.lua",
     "components/console.lua",
-
-    "components/status_bar.lua",
-    "components/login_window.lua",
-    "components/downloader.lua",
-    "components/chat_windows.lua",
-    "components/play_window.lua",
-    "components/background.lua",
-    "components/battle_list_window.lua",
-    "components/battle_room_window.lua",
     "components/user_list_panel.lua",
 
+    -- misc
+    "components/login_window.lua",
+    "components/chat_windows.lua",
+    "components/downloader.lua",
+    "components/background.lua",
+
+    -- play
+    "components/play_window.lua",
+    -- battle
+    "components/battle/battle_list_window.lua",
+    "components/battle/battle_room_window.lua",
+    -- queue
     "components/queue/queue_list_window.lua",
     "components/queue/queue_window.lua",
     "components/queue/ready_check_window.lua",
+    
+    -- status bar
+    "components/status_bar/status_bar.lua",
 }
 
 local ChiliLobby = widget
