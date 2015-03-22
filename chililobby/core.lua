@@ -29,6 +29,14 @@ local includes = {
     
     -- status bar
     "components/status_bar/status_bar.lua",
+    "components/status_bar/sb_item.lua",
+    "components/status_bar/sb_connection_status.lua",
+    "components/status_bar/sb_downloads_icon.lua",
+    "components/status_bar/sb_errors_icon.lua",
+    "components/status_bar/sb_friends_icon.lua",
+    "components/status_bar/sb_menu_icon.lua",
+    "components/status_bar/sb_player_welcome.lua",
+    "components/status_bar/sb_server_status.lua",
 }
 
 local ChiliLobby = widget
@@ -38,16 +46,18 @@ for _, file in ipairs(includes) do
 end
 
 function ChiliLobby:initialize()
-    local loginWindow = LoginWindow()
-    --self.downloader = Downloader()
-    local statusBar = StatusBar()
-    local background = Background()
+    self:WrapCall(function()
+        local loginWindow = LoginWindow()
+        --self.downloader = Downloader()
+        local statusBar = StatusBar()
+        local background = Background()
 
-    lobby:AddListener("OnJoinBattle", 
-        function(listener, battleID)
-            local battleRoom = BattleRoomWindow(battleID)
-        end
-    )
+        lobby:AddListener("OnJoinBattle", 
+            function(listener, battleID)
+                local battleRoom = BattleRoomWindow(battleID)
+            end
+        )
+    end)
 end
 
 function ChiliLobby:DrawScreen()

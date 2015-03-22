@@ -109,10 +109,10 @@ function PlayWindow:init()
     }
 
     self.window = Window:New {
-        x = 10,
+        x = 5,
         --width = "60%",
         width = "60%",
-        y = 65,
+        y = 60,
         bottom = 0,
         minWidth = 700,
         parent = screen0,

@@ -54,6 +54,8 @@ return {
             other = "%{count} items to download.",
         },
         downloads_completed = "All downloads completed.",
+        server = "Server",
+        debug = "Debug",
 	},
 	sr = {
 		connect_to_spring_server = 'Prijavljivanje na Spring lobi server',
