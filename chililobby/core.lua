@@ -1,7 +1,6 @@
 local includes = {
     -- order matters
     "headers/exports.lua",
-    "headers/chilifx.lua",
     
     "components/configuration.lua",
 

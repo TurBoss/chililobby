@@ -28,7 +28,7 @@ function ReadyCheckWindow:init(queue, responseTime, queueWindow)
                     self:SendResponse("timeout")
                     self.lblReadyCheck.x = 60
                     self.lblReadyCheck:SetCaption(i18n("timeout_leaving_queue") .. "...")
-                    WG.Delay(function() self.window:Dispose() end, 3)
+                    WG.Delay(function() self:Dispose() end, 3)
                     return
                 else
                     local diff = math.floor(self.readyCheckTime - self.currentTime)
@@ -68,7 +68,7 @@ function ReadyCheckWindow:init(queue, responseTime, queueWindow)
             self:SendResponse("notready")
             self.lblReadyCheck.x = 60
             self.lblReadyCheck:SetCaption(i18n("not_ready_leaving_queue") .. "...")
-            WG.Delay(function() self.window:Dispose() end, 2)
+            WG.Delay(function() self:Dispose() end, 2)
         end },
     }
 
@@ -116,12 +116,24 @@ function ReadyCheckWindow:init(queue, responseTime, queueWindow)
             self.lblReadyCheck.x = 60
             self.lblReadyCheck:SetCaption(i18n("failed_reconnecting_queue") .. "...")
             self.rejoinQueueOnDispose = true
-            WG.Delay(function() self.window:Dispose() end, 1)
+            WG.Delay(function() self:Dispose() end, 1)
         end
         self.window:Invalidate()
     end
 
     lobby:AddListener("OnReadyCheckResult", self.onReadyCheckResult)
+end
+
+function ReadyCheckWindow:Dispose()
+    ChiliFX:AddFadeEffect({
+        obj = self.window, 
+        time = 0.01,
+        endValue = 0,
+        startValue = 1,
+        after = function()
+            self.window:Dispose()
+        end
+    })
 end
 
 function ReadyCheckWindow:SendResponse(response, noResponseTime)

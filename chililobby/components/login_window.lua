@@ -119,7 +119,7 @@ function LoginWindow:init()
     }
 
     local ww, wh = Spring.GetWindowGeometry()
-    local w, h = 265 * self.scale, 220 * self.scale
+    local w, h = math.floor(265 * self.scale), math.floor(220 * self.scale)
     self.window = Window:New {
         x = (ww - w) / 2,
         y = (wh - h) / 2,
@@ -127,6 +127,7 @@ function LoginWindow:init()
         height = h,
         caption = i18n("login_noun"),
         resizable = false,
+        draggable = false,
         children = {
             self.lblInstructions,
             self.lblUsername,
@@ -189,7 +190,7 @@ function LoginWindow:tryLogin()
     end
     Configuration.userName = username
     Configuration.password = password
-    Configuration.autoLogin = true
+    --Configuration.autoLogin = true
     Configuration:SaveConfig()
 
     password = VFS.CalcMd5(password)
@@ -260,11 +261,19 @@ function LoginWindow:OnConnected()
     end
 
     self.onAccepted = function(listener)
-        local playWindow = PlayWindow()
-        local chatWindows = ChatWindows()
-        self.window:Dispose()
         lobby:RemoveListener("OnAccepted", self.onAccepted)
         lobby:RemoveListener("OnDenied", self.onDenied)
+        ChiliFX:AddFadeEffect({
+            obj = self.window, 
+            time = 0.2,
+            endValue = 0,
+            startValue = 1,
+            after = function()
+                self.window:Dispose()
+                local playWindow = PlayWindow()
+                local chatWindows = ChatWindows()
+            end,
+        })
     end
 
     lobby:AddListener("OnAccepted", self.onAccepted)

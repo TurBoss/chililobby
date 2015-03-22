@@ -49,7 +49,7 @@ function QueueWindow:init(queue)
 
     self.onReadyCheck = function(listener, queueId, responseTime)
         if queueId == queue.queueId then
-            self.queueWindow:Hide()
+            self:HideWindow()
             ReadyCheckWindow(queue, responseTime, self.queueWindow)
         end
     end
@@ -66,4 +66,16 @@ end
 function QueueWindow:RemoveListeners()
     lobby:RemoveListener("OnLeftQueue", self.onLeftQueue)
     lobby:RemoveListener("OnReadyCheck", self.onReadyCheck)
+end
+
+function QueueWindow:HideWindow()
+    ChiliFX:AddFadeEffect({
+        obj = self.queueWindow, 
+        time = 0.15,
+        endValue = 0,
+        startValue = 1,
+        after = function()
+            self.queueWindow:Hide()
+        end
+    })
 end

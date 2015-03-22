@@ -66,6 +66,7 @@ function ChatWindows:init()
 
     self.channelConsoles = {}
     self.userListPanels = {}
+    self.tabbars = {}
     lobby:AddListener("OnJoin",
         function(listener, chanName)
             local channelConsole = self:GetChannelConsole(chanName)
@@ -78,6 +79,7 @@ function ChatWindows:init()
             local channelConsole = self.channelConsoles[chanName]
             if channelConsole ~= nil then
                 channelConsole:AddMessage(message, userName)
+                
             end
         end
     )
@@ -127,8 +129,8 @@ function ChatWindows:init()
         bottom = 0,
         padding = {0, 0, 0, 0},
         tabs = {
-            { name = "server", children = {self.serverPanel} },
-            { name = "debug", children = {self.debugConsole.panel} },
+            { name = i18n("server"), children = {self.serverPanel} },
+            { name = i18n("debug"), children = {self.debugConsole.panel} },
         },
     }
 
@@ -138,7 +140,7 @@ function ChatWindows:init()
         bottom = 0,
         height = 500,
         parent = screen0,
-        caption = "Chat",
+        caption = i18n("chat"),
         resizable = false,
         draggable = false,
         padding = {5, 0, 5, 0},
@@ -162,10 +164,10 @@ end
 function ChatWindows:Minimize()
     ChiliFX:AddFadeEffect({
         obj = self.window, 
-        fadeTime = 0.1,
+        time = 0.1,
         endValue = 0,
         startValue = 1,
-        callback = function()
+        after = function()
             self.window:Hide()
 
             if not self.minimizeWindow then
@@ -203,7 +205,7 @@ function ChatWindows:Maximize()
     self.window:Show()
     ChiliFX:AddFadeEffect({
         obj = self.window, 
-        fadeTime = 0.1,
+        time = 0.1,
         endValue = 1,
         startValue = 0,
     })
@@ -310,6 +312,7 @@ function ChatWindows:GetChannelConsole(chanName)
                 },
             }
         })
+        self.tabbars[chanName] = self.tabPanel.children[#self.tabPanel.children]
 
         lobby:AddListener("OnClients", 
         function(listener, clientsChanName, clients)
@@ -329,6 +332,7 @@ function ChatWindows:GetPrivateChatConsole(userName)
     if privateChatConsole == nil then
         privateChatConsole = Console()
         self.privateChatConsoles[userName] = privateChatConsole
+        self.tabbars[chanName] = self.tabPanel.children[#self.tabPanel.children]
 
         privateChatConsole.listener = function(message)
             lobby:SayPrivate(userName, message)

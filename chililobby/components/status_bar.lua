@@ -365,17 +365,21 @@ function StatusBar:UpdateDownloadStatus()
        -- self.btnDownloads.children[1]:SetCaption("\255\120\120\120" .. tostring(self.downloads) .. "\b")
         img.file = CHILI_LOBBY_IMG_DIR .. "download.png"
     else
-        ChiliFX:AddFadeEffect({
+        ChiliFX:AddGlowEffect({
             obj = img, 
-            fadeTime = 3, 
+            time = 3, 
             endValue = 0.4, 
-            callback = function()
+            after = function()
                 img.file = CHILI_LOBBY_IMG_DIR .. "download_off.png"
                 img.DrawControl = Image.DrawControl
                 img:Invalidate()
             end
         })
         self.btnDownloads.children[1]:SetCaption("")
+        Chotify:Post({
+            title = "Download",
+            body = i18n("downloads_completed"),
+        })
     end
     img:Invalidate()
 end
@@ -391,16 +395,20 @@ function StatusBar:DownloadQueued(...)
     self:UpdateDownloadStatus()
 
     local img = self.btnDownloads.children[2]
-    ChiliFX:AddFadeEffect({
+    ChiliFX:AddGlowEffect({
         obj = img, 
-        fadeTime = 1,
+        time = 1,
         endValue = 1,
         startValue = 2,
-        callback = function()
+        after = function()
             img.file = CHILI_LOBBY_IMG_DIR .. "download.png"
             img.DrawControl = Image.DrawControl
             img:Invalidate()
         end
+    })
+    Chotify:Post({
+        title = "Download",
+        body = i18n("items_to_download", {count=self.downloads}),
     })
 end
 

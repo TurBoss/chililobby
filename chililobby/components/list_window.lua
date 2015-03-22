@@ -18,16 +18,7 @@ function ListWindow:init(parent, title)
         caption = Configuration:GetErrorColor() .. i18n("close") .. "\b",
         OnClick = {
             function()
-                ChiliFX:AddFadeEffect({
-                    obj = self.window, 
-                    fadeTime = 0.2,
-                    endValue = 0,
-                    startValue = 1,
-                    callback = function()
-                        self.window:Hide()
-                    end
-                })
-                --self.window:Hide() --Dispose()
+                self:HideWindow()
             end
         },
     }
@@ -64,6 +55,19 @@ function ListWindow:init(parent, title)
 
     self.itemPanelMapping = {}
     self.orderPanelMapping = {}
+end
+
+function ListWindow:HideWindow()
+    ChiliFX:AddFadeEffect({
+        obj = self.window, 
+        time = 0.15,
+        endValue = 0,
+        startValue = 1,
+        after = function()
+            self.window:Hide()
+        end
+    })
+    --self.window:Hide() --Dispose()
 end
 
 function ListWindow:AddListeners()

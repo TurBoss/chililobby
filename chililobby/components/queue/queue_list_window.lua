@@ -160,7 +160,7 @@ function QueueListWindow:JoinQueue(queue, btnJoin)
     self.onJoinQueue = function(listener)
         QueueWindow(queue)
         lobby:RemoveListener("OnJoinQueue", self.onJoinQueue)
-        self.window:Hide() --Dispose()
+        self:HideWindow() --Dispose()
         btnJoin.state.pressed = false
     end
     lobby:AddListener("OnJoinQueue", self.onJoinQueue)

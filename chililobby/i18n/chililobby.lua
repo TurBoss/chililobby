@@ -49,6 +49,11 @@ return {
         waiting_for_other_players = "Waiting for other players",
         game_starting_soon = "Game starting soon",
         timeout_leaving_queue = "Timeout, leaving queue",
+        items_to_download = {
+            one = "One item to download.",
+            other = "%{count} items to download.",
+        },
+        downloads_completed = "All downloads completed.",
 	},
 	sr = {
 		connect_to_spring_server = 'Prijavljivanje na Spring lobi server',
