@@ -91,6 +91,11 @@ return {
         register_verb = "登録",
         custom_games = "カスタムゲーム",
         battle = "対戦",
-        
+        yes_caps = "はい",
+        no_caps = "いいえ",
+        are_you_ready = "準備できた?",
+        seconds_short = "秒",
+        waiting_for_other_players = "他のプレーヤを待っている",
+        game_starting_soon = "もうすぐにゲームが始まる",
     },
 }
