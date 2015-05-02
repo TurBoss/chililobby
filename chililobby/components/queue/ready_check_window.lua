@@ -98,7 +98,7 @@ function ReadyCheckWindow:init(queue, responseTime, queueWindow)
         end },
     }
 
-    self.onReadyCheckResult = function(listener, queueId, result)
+    self.onReadyCheckResult = function(listener, name, result)
         if result == "pass" then
             self.lblReadyCheck.x = 60
             self.lblReadyCheck:SetCaption(i18n("game_starting_soon") .. "...")
@@ -143,7 +143,7 @@ function ReadyCheckWindow:SendResponse(response, noResponseTime)
         responseTime = math.floor(self.currentTime - self.startTime)
     end
     self.sentResponse = true	
-    lobby:ReadyCheckResponse(self.queue.queueId, response, responseTime)
+    lobby:ReadyCheckResponse(self.queue.name, response, responseTime)
 
     -- hide buttons
     self.btnYes:Hide()

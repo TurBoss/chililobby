@@ -41,22 +41,22 @@ function QueueWindow:init(queue)
                 right = 5,
                 width = 70,
                 height = 45,
-                OnClick = { function () lobby:LeaveQueue(queue.queueId) end },
+                OnClick = { function () lobby:LeaveQueue(queue.name) end },
             },
         },
         OnDispose = { function() self:RemoveListeners() end },
     }
 
-    self.onReadyCheck = function(listener, queueId, responseTime)
-        if queueId == queue.queueId then
+    self.onReadyCheck = function(listener, name, responseTime)
+        if name == queue.name then
             self:HideWindow()
             ReadyCheckWindow(queue, responseTime, self.queueWindow)
         end
     end
     lobby:AddListener("OnReadyCheck", self.onReadyCheck)
 
-    self.onLeftQueue = function(listener, queueId, reason)
-        if queue.queueId == queueId then
+    self.onLeftQueue = function(listener, name, reason)
+        if queue.name == name then
             self.queueWindow:Dispose()
         end
     end

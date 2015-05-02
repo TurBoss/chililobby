@@ -6,8 +6,8 @@ function QueueListWindow:init(parent)
     self.onQueueOpened = function(listener, queue)
         self:AddQueue(queue)
     end
-    self.onQueueClosed = function(listener, queueId)
-        self:RemoveRow(queueId)
+    self.onQueueClosed = function(listener, name)
+        self:RemoveRow(name)
     end
     self.OnListQueues = function() self:Update() end
     lobby:AddListener("OnQueueOpened", self.onQueueOpened)
@@ -153,7 +153,7 @@ function QueueListWindow:AddQueue(queue)
         btnQueue,
     }
 
-    self:AddRow(items, queue.queueId)
+    self:AddRow(items, queue.name)
 end
 
 function QueueListWindow:JoinQueue(queue, btnJoin)
@@ -164,5 +164,5 @@ function QueueListWindow:JoinQueue(queue, btnJoin)
         btnJoin.state.pressed = false
     end
     lobby:AddListener("OnJoinQueue", self.onJoinQueue)
-    lobby:JoinQueue(queue.queueId)
+    lobby:JoinQueue(queue.name)
 end
