@@ -6,7 +6,7 @@ function UserListPanel:init(source)
     elseif type(source) == "string" then
         self.chanName = source
     else
-        error("Missing battleId or chanName param")
+        self.team = true
     end
 
     self.userPanel = ScrollPanel:New {
@@ -74,6 +74,16 @@ function UserListPanel:AddListeners()
             end
         end
         lobby:AddListener("OnLeft", self.onLeft)
+    elseif self.team then
+        self.onJoinedTeam = function(listner, ...)
+            self:Update()
+        end
+        lobby:AddListener("OnJoinedTeam", self.onJoinedTeam)
+
+        self.onLeftTeam = function(listner, ...)
+            self:Update()
+        end
+        lobby:AddListener("OnLeftTeam", self.onLeftTeam)
     end
 end
 
@@ -85,6 +95,9 @@ function UserListPanel:RemoveListeners()
         lobby:RemoveListener("OnClients", self.onClients)
         lobby:RemoveListener("OnJoined", self.onJoined)
         lobby:RemoveListener("OnLeft", self.onLeft)
+    elseif self.team then
+        lobby:RemoveListener("OnJoinedTeam", self.onJoinedTeam)
+        lobby:RemoveListener("OnLeftTeam", self.onLeftTeam)
     end
 end
 
@@ -99,6 +112,11 @@ function UserListPanel:GetUsers()
         local channel = lobby:GetChannel(self.chanName)
         if channel ~= nil then
             userNames = channel.users
+        end
+    elseif self.team then
+        local team = lobby:GetTeam()
+        if team ~= nil then
+            userNames = team.users
         end
     end
 

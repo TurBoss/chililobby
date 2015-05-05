@@ -157,7 +157,7 @@ function ChatWindows:init()
         }
     }
 
-    CHILI_LOBBY = { chatWindows = self }
+    CHILI_LOBBY.chatWindows = self
     self:Minimize()
 end
 

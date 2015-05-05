@@ -272,6 +272,7 @@ function LoginWindow:OnConnected()
                 self.window:Dispose()
                 local playWindow = PlayWindow()
                 local chatWindows = ChatWindows()
+                local teamWindow = TeamWindow()
             end,
         })
     end

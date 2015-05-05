@@ -57,6 +57,13 @@ return {
         server = "Server",
         debug = "Debug",
         language = "Language",
+        team = "Team",
+        invite_player = "Invite player",
+        invited_to_team = "Invited to join team",
+        invites_you_to_join_team = " invites you to join a team",
+        joined_team = " has joined the team",
+        join_team = "You have joined a team",
+        declined_invite_team = " has declined to join the team",
 	},
 	sr = {
 		connect_to_spring_server = 'Prijavljivanje na Spring lobi server',
@@ -97,5 +104,9 @@ return {
         seconds_short = "秒",
         waiting_for_other_players = "他のプレーヤを待っている",
         game_starting_soon = "もうすぐにゲームが始まる",
+        server = "サーバ",
+        debug = "デバッグ",
+        language = "言語",
+        submit = "送信",
     },
 }
