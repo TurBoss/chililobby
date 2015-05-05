@@ -332,7 +332,7 @@ function ChatWindows:GetPrivateChatConsole(userName)
     if privateChatConsole == nil then
         privateChatConsole = Console()
         self.privateChatConsoles[userName] = privateChatConsole
-        self.tabbars[chanName] = self.tabPanel.children[#self.tabPanel.children]
+        self.tabbars[userName] = self.tabPanel.children[#self.tabPanel.children]
 
         privateChatConsole.listener = function(message)
             lobby:SayPrivate(userName, message)
