@@ -176,7 +176,7 @@ function TeamWindow:OnJoinTeam()
 --         body = i18n("join_team"),
 --     })
     self.btnInvitePlayer:Hide()
-    self:MakeTeamConsole()
+    self:ShowTeamConsole()
 end
 
 function TeamWindow:OnLeftTeam(userName, reason)
@@ -187,16 +187,13 @@ function TeamWindow:OnLeftTeam(userName, reason)
     end
     if userName == lobby:GetMyUserName() then
         self.btnInvitePlayer:Show()
-        self:MakeTeamConsole()
         Chotify:Post({
             title = i18n("Team"),
             body = i18n("self_left_team") .. reason,
         })
         for _, child in pairs(self.teamPanel) do
-            self.window:RemoveChild(child)
+            child:Hide()
         end
-        self.teamConsole = nil
-        self.userListPanel = nil
     else
         Chotify:Post({
             title = i18n("Team"),
@@ -213,8 +210,7 @@ function TeamWindow:OnInviteTeamDeclined(userName)
 end
 
 function TeamWindow:UpdateTeamLeader()
-    Spring.Echo(lobby:GetTeam().leader)
-    if lobby:GetTeam().leader == lobby:GetMyUserName() then
+    if lobby:GetTeam() ~= nil and lobby:GetTeam().leader == lobby:GetMyUserName() then
         self.btnInviteTeam.children[1].file = CHILI_LOBBY_IMG_DIR .. "add_friend.png"
         self.btnInviteTeam.OnClick = { function()
             self:CreateInvitePlayerWindow()
@@ -257,6 +253,32 @@ function TeamWindow:MakeTeamConsole()
         },
     }
     
+    self.btnLeaveTeam = Button:New {
+        x = 90,
+        width = 36,
+        height = 36,
+        y = 4,
+        caption = '',
+        padding = {0, 0, 0, 0},
+        itemPadding = {0, 0, 0, 0},
+        borderThickness = 0,
+        backgroundColor = {0, 0, 0, 0},
+        focusColor      = {0.4, 0.4, 0.4, 1},
+        children = {
+            Image:New {
+                x = 4,
+                y = 4,
+                width = 28,
+                height = 28,
+                margin = {0, 0, 0, 0},
+                file = CHILI_LOBBY_IMG_DIR .. "download.png"
+            },
+        },
+        OnClick = { function()
+            lobby:LeaveTeam()
+        end},
+    }
+    
     self.teamPanel = {
         Control:New {
             x = 0, y = 40, right = 145, bottom = 10,
@@ -269,8 +291,19 @@ function TeamWindow:MakeTeamConsole()
             children = { self.userListPanel.panel, },
         },
         self.btnInviteTeam,
+        self.btnLeaveTeam,
     }
+end
 
+function TeamWindow:ShowTeamConsole()
+    if self.teamPanel == nil then
+        self:MakeTeamConsole()
+    else
+        for _, child in pairs(self.teamPanel) do
+            child:Show()
+        end
+    end
+    
     self:UpdateTeamLeader()
     for _, child in pairs(self.teamPanel) do
         self.window:AddChild(child)
