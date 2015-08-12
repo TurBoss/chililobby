@@ -103,9 +103,9 @@ function ReadyCheckWindow:init(queue, responseTime, queueWindow)
             self.lblReadyCheck.x = 60
             self.lblReadyCheck:SetCaption(i18n("game_starting_soon") .. "...")
 
-            self.onConnectUser = function(listener, ip, port, engine)
+            self.onConnectUser = function(listener, ip, port, engine, password)
                 WG.Delay(function()
-                    local springURL = "spring://" .. lobby:GetMyUserName() .. ":12345@" .. ip .. ":" .. port
+                    local springURL = "spring://" .. lobby:GetMyUserName() .. ":" .. password .. "@" .. ip .. ":" .. port
                     Spring.Echo(springURL)
                     Spring.Restart(springURL, "")
                     lobby:RemoveListener(self.onConnect)
