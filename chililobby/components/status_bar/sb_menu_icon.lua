@@ -77,10 +77,10 @@ function SBMenuIcon:init()
                                 width = 150,
                                 height = 40,
                                 y = 40,
-                                items = { "English", "Japanese", "Serbian" },
+                                items = { "English", "Japanese", "Serbian", "Spanish" },
                                 OnSelect = {function(obj, indx, changed) 
                                     if changed then
-                                        local locales = { "en", "jp", "sr" }
+                                        local locales = { "en", "jp", "sr", "es" }
                                         i18n.setLocale(locales[indx])
                                     end
                                 end},
