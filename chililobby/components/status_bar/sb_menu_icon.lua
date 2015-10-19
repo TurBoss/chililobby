@@ -22,6 +22,7 @@ function SBMenuIcon:init()
         height = self.iconSize + self.imagePadding,
         y = (self.height - self.iconSize) / 2 - 4,
         caption = '',
+        tooltip = i18n("menu"),
         padding = {0, 0, 0, 0},
         itemPadding = {0, 0, 0, 0},
         borderThickness = 0,
@@ -119,7 +120,7 @@ function SBMenuIcon:init()
                     Spring.Echo("Logout")
                 elseif itemIdx == 4 then
                     Spring.Echo("Quitting...")
-                    Spring.SendCommands("Quit")
+                    Spring.SendCommands("quitforce")
                 end
             end
         end
