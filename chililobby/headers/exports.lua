@@ -39,6 +39,7 @@ ChiliFX = WG.ChiliFX
 Chotify = WG.Chotify
 
 i18n.loadFile(CHILILOBBY_DIR .. "i18n/chililobby.lua")
+i18n.setLocale('es')
 i18n.setLocale('sr')
 i18n.setLocale('jp')
 i18n.setLocale('en')
