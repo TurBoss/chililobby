@@ -178,6 +178,10 @@ function LoginWindow:RemoveListeners()
         lobby:RemoveListener("OnTASServer", self.onTASServer)
         self.onTASServer = nil
     end
+	if self.onDisconnected then
+		lobby:RemoveListener("OnDisconnected", self.onDisconnected)
+        self.onDisconnected = nil
+	end
 end
 
 function LoginWindow:tryLogin()
@@ -202,6 +206,12 @@ function LoginWindow:tryLogin()
             self:OnConnected(listener)
         end
         lobby:AddListener("OnTASServer", self.onTASServer)
+
+		self.onDisconnected = function(listener)
+            lobby:RemoveListener("OnDisconnected", self.onDisconnected)
+            self.lblError:SetCaption("Cannot reach server:\n" .. tostring(Configuration:GetServerAddress()) .. ":" .. tostring(Configuration:GetServerPort()))
+        end
+        lobby:AddListener("OnDisconnected", self.onDisconnected)
 
         lobby:Connect(Configuration:GetServerAddress(), Configuration:GetServerPort())
     else
