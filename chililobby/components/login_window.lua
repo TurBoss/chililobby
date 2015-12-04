@@ -193,9 +193,6 @@ function LoginWindow:tryLogin()
     --Configuration.autoLogin = true
     Configuration:SaveConfig()
 
-    password = VFS.CalcMd5(password)
-
-
     if not lobby.connected or self.loginAttempts >= 3 then
         self.loginAttempts = 0
         self:RemoveListeners()
@@ -222,7 +219,6 @@ function LoginWindow:tryRegister()
     if username == '' or password == '' then
         return
     end
-    password = VFS.CalcMd5(password)
 
     if not lobby.connected or self.loginAttempts >= 3 then
         self.loginAttempts = 0
