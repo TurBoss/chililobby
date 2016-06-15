@@ -1,7 +1,7 @@
 local includes = {
     -- order matters
     "headers/exports.lua",
-    
+
     -- config
     "components/configuration.lua",
 
@@ -27,7 +27,7 @@ local includes = {
     "components/queue/queue_list_window.lua",
     "components/queue/queue_window.lua",
     "components/queue/ready_check_window.lua",
-    
+
     -- status bar
     "components/status_bar/status_bar.lua",
     "components/status_bar/sb_item.lua",
