@@ -79,7 +79,6 @@ function ChatWindows:init()
             local channelConsole = self.channelConsoles[chanName]
             if channelConsole ~= nil then
                 channelConsole:AddMessage(message, userName)
-                
             end
         end
     )
@@ -315,11 +314,11 @@ function ChatWindows:GetChannelConsole(chanName)
         self.tabbars[chanName] = self.tabPanel.children[#self.tabPanel.children]
 
         lobby:AddListener("OnClients", 
-        function(listener, clientsChanName, clients)
-            if chanName == clientsChanName then
-                Spring.Echo("Users in channel: " .. chanName, #lobby:GetChannel(chanName).users)
+            function(listener, clientsChanName, clients)
+                if chanName == clientsChanName then
+                    Spring.Echo("Users in channel: " .. chanName, #lobby:GetChannel(chanName).users)
+                end
             end
-        end
         )
     end
 
