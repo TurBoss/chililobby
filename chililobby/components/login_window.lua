@@ -178,6 +178,10 @@ function LoginWindow:RemoveListeners()
         lobby:RemoveListener("OnTASServer", self.onTASServer)
         self.onTASServer = nil
     end
+    if self.onDisconnected then
+        lobby:RemoveListener("OnDisconnected", self.onDisconnected)
+        self.onDisconnected = nil
+    end
 end
 
 function LoginWindow:tryLogin()
@@ -193,9 +197,6 @@ function LoginWindow:tryLogin()
     --Configuration.autoLogin = true
     Configuration:SaveConfig()
 
-    password = VFS.CalcMd5(password)
-
-
     if not lobby.connected or self.loginAttempts >= 3 then
         self.loginAttempts = 0
         self:RemoveListeners()
@@ -205,6 +206,12 @@ function LoginWindow:tryLogin()
             self:OnConnected(listener)
         end
         lobby:AddListener("OnTASServer", self.onTASServer)
+
+        self.onDisconnected = function(listener)
+            lobby:RemoveListener("OnDisconnected", self.onDisconnected)
+            self.lblError:SetCaption("Cannot reach server:\n" .. tostring(Configuration:GetServerAddress()) .. ":" .. tostring(Configuration:GetServerPort()))
+        end
+        lobby:AddListener("OnDisconnected", self.onDisconnected)
 
         lobby:Connect(Configuration:GetServerAddress(), Configuration:GetServerPort())
     else
@@ -222,7 +229,6 @@ function LoginWindow:tryRegister()
     if username == '' or password == '' then
         return
     end
-    password = VFS.CalcMd5(password)
 
     if not lobby.connected or self.loginAttempts >= 3 then
         self.loginAttempts = 0
@@ -335,11 +341,12 @@ function LoginWindow:createAgreementWindow()
     }
     self.agreementWindow = Window:New {
         x = 600,
-        y = 400,
+        y = 200,
         width = 350 * self.scale,
         height = 450 * self.scale,
         caption = "Use agreement",
         resizable = false,
+        draggable = false,
         children = {
             ScrollPanel:New {
                 x = 1,
@@ -364,5 +371,6 @@ function LoginWindow:acceptAgreement()
 end
 
 function LoginWindow:declineAgreement()
+    lobby:Disconnect()
     self.agreementWindow:Dispose()
 end
